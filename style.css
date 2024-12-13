@@ -73,15 +73,15 @@ p {
 /* レスポンシブデザイン */
 @media (max-width: 600px) {
     h1 {
-        font-size: 2em;
+        font-size: 3em;
     }
 
     p {
-        font-size: 1em;
+        font-size: 2em;
     }
 
     .link-item {
-        font-size: 1em;
+        font-size: 2em;
     }
 
     .container {
