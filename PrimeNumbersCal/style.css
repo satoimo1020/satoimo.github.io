@@ -1,0 +1,64 @@
+/* ベースの設定 */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.content-box {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* 入力フォームのスタイル */
+.input {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#num {
+    width: 80%; /* 入力フォームの幅を画面サイズに合わせて調整 */
+    height: 40px;
+    padding: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* 素数判定結果のスタイル */
+.judge, .result {
+    padding: 15px;
+    margin: 10px auto;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.judge {
+    background-color: beige;
+    max-width: 600px;
+    width: 90%;
+}
+
+.result {
+    background-color: antiquewhite;
+    max-width: 600px;
+    width: 90%;
+}
+
+/* レスポンシブデザイン: 画面幅が768px以下の場合 */
+@media (max-width: 768px) {
+    #num {
+        width: 90%;
+        font-size: 14px;
+    }
+
+    .judge, .result {
+        padding: 10px;
+    }
+
+    .content-box {
+        padding: 5px;
+    }
+}
