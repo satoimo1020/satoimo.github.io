@@ -18,7 +18,7 @@ body {
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 80%;
+    width: 90%;
     max-width: 600px;
     opacity: 0; /* 初期状態で非表示 */
     transform: translateY(30px); /* 下に隠しておく */
@@ -45,6 +45,9 @@ p {
 
 /* リンクボタンのスタイル */
 .links {
+    display: flex;
+    flex-direction: column; /* リストを縦に並べる */
+    gap: 10px; /* リンク間のスペース */
     margin-top: 20px;
 }
 
@@ -55,9 +58,10 @@ p {
     padding: 15px;
     text-decoration: none;
     border-radius: 8px;
-    margin: 10px 0;
     font-size: 1.2em;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    opacity: 0;
+    transform: translateX(-50px); /* 初期状態で左に隠しておく */
+    transition: background-color 0.3s ease, transform 0.3s ease, opacity 1s ease-out;
 }
 
 /* リンクホバー時のアニメーション */
@@ -72,7 +76,16 @@ p {
         font-size: 2em;
     }
 
+    p {
+        font-size: 1em;
+    }
+
     .link-item {
         font-size: 1em;
+    }
+
+    .container {
+        width: 95%; /* モバイル端末では幅を広げる */
+        padding: 15px;
     }
 }
