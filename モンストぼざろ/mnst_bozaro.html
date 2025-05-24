@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>モンストぼざろスクリプト</title>
+    <style>
+        .circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            position: absolute;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            background-color: gray;
+        }
+        #container {
+            position: relative;
+            width: 400px;
+            height: 300px;
+            margin: 50px auto;
+        }
+        .button-group {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div class="circle" id="c0" style="top: 30px; left: 100px;">1</div>
+        <div class="circle" id="c5" style="top: 120px; left: 40px;">6</div>
+        <div class="circle" id="c4" style="top: 210px; left: 100px;">5</div>
+        <div class="circle" id="c1" style="top: 30px; left: 220px;">2</div>
+        <div class="circle" id="c2" style="top: 120px; left: 280px;">3</div>
+        <div class="circle" id="c3" style="top: 210px; left: 220px;">4</div>
+    </div>
+
+    <div class="button-group">
+        <button id="toggleModeBtn">入力モード終了 / 計算モード開始</button>
+        <button id="solveBtn" style="display: none;">揃える手順を表示</button>
+        <button id="resetBtn">リセット</button>
+    </div>
+
+    <script>
+        const colors = ["blue", "yellow", "red"];
+        let state = [null, null, null, null, null, null];
+        let inputPhase = true;
+
+        function updateUI() {
+            for (let i = 0; i < 6; i++) {
+                const circle = document.getElementById(`c${i}`);
+                if (state[i] !== null) {
+                    circle.style.backgroundColor = colors[state[i]];
+                } else {
+                    circle.style.backgroundColor = "gray";
+                }
+            }
+        }
+
+        function rotateColor(index) {
+            state[index] = (state[index] + 1) % 3;
+        }
+
+        function clickCircle(index) {
+            if (inputPhase) {
+                state[index] = (state[index] === null ? 0 : (state[index] + 1) % 3);
+                updateUI();
+                return;
+            }
+
+            // Modify only neighbors, not the clicked circle itself
+            const left = (index + 5) % 6;
+            const right = (index + 1) % 6;
+            rotateColor(left);
+            rotateColor(right);
+            updateUI();
+        }
+
+        for (let i = 0; i < 6; i++) {
+            document.getElementById(`c${i}`).addEventListener("click", () => clickCircle(i));
+        }
+
+        function allSame(arr) {
+            return arr.every(v => v === arr[0]);
+        }
+
+        function solvePuzzle() {
+            const queue = [{ state: [...state], steps: [], last: -1 }];
+            const visited = new Set();
+            visited.add(state.join(""));
+
+            while (queue.length) {
+                const { state: curr, steps, last } = queue.shift();
+                if (allSame(curr)) {
+                    alert("揃える手順: " + steps.map(i => i + 1).join(", "));
+                    return;
+                }
+                for (let i = 0; i < 6; i++) {
+                    if (i === last) continue; // Skip same button as last
+                    const next = [...curr];
+                    const left = (i + 5) % 6;
+                    const right = (i + 1) % 6;
+                    next[left] = (next[left] + 1) % 3;
+                    next[right] = (next[right] + 1) % 3;
+                    const key = next.join("") + "-" + i;
+                    if (!visited.has(key)) {
+                        visited.add(key);
+                        queue.push({ state: next, steps: [...steps, i], last: i });
+                    }
+                }
+            }
+            alert("解決手順が見つかりませんでした。");
+        }
+
+        document.getElementById("solveBtn").addEventListener("click", solvePuzzle);
+
+        document.getElementById("toggleModeBtn").addEventListener("click", () => {
+            if (state.every(v => v !== null)) {
+                inputPhase = !inputPhase;
+                document.getElementById("solveBtn").style.display = inputPhase ? "none" : "inline-block";
+            } else {
+                alert("すべての円に色を設定してください。");
+            }
+        });
+
+        document.getElementById("resetBtn").addEventListener("click", () => {
+            state = [null, null, null, null, null, null];
+            inputPhase = true;
+            document.getElementById("solveBtn").style.display = "none";
+            updateUI();
+        });
+
+        updateUI();
+    </script>
+</body>
+</html>
