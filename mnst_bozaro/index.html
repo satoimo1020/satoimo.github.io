@@ -3,33 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>モンストぼざろスクリプト</title>
-    <style>
-        .circle {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            position: absolute;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            background-color: gray;
-        }
-        #container {
-            position: relative;
-            width: 400px;
-            height: 300px;
-            margin: 50px auto;
-        }
-        .button-group {
-            text-align: center;
-            margin-top: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
     <div id="container">
@@ -47,96 +22,7 @@
         <button id="resetBtn">リセット</button>
     </div>
 
-    <script>
-        const colors = ["blue", "yellow", "red"];
-        let state = [null, null, null, null, null, null];
-        let inputPhase = true;
-
-        function updateUI() {
-            for (let i = 0; i < 6; i++) {
-                const circle = document.getElementById(`c${i}`);
-                if (state[i] !== null) {
-                    circle.style.backgroundColor = colors[state[i]];
-                } else {
-                    circle.style.backgroundColor = "gray";
-                }
-            }
-        }
-
-        function rotateColor(index) {
-            state[index] = (state[index] + 1) % 3;
-        }
-
-        function clickCircle(index) {
-            if (inputPhase) {
-                state[index] = (state[index] === null ? 0 : (state[index] + 1) % 3);
-                updateUI();
-                return;
-            }
-
-            // Modify only neighbors, not the clicked circle itself
-            const left = (index + 5) % 6;
-            const right = (index + 1) % 6;
-            rotateColor(left);
-            rotateColor(right);
-            updateUI();
-        }
-
-        for (let i = 0; i < 6; i++) {
-            document.getElementById(`c${i}`).addEventListener("click", () => clickCircle(i));
-        }
-
-        function allSame(arr) {
-            return arr.every(v => v === arr[0]);
-        }
-
-        function solvePuzzle() {
-            const queue = [{ state: [...state], steps: [], last: -1 }];
-            const visited = new Set();
-            visited.add(state.join(""));
-
-            while (queue.length) {
-                const { state: curr, steps, last } = queue.shift();
-                if (allSame(curr)) {
-                    alert("揃える手順: " + steps.map(i => i + 1).join(", "));
-                    return;
-                }
-                for (let i = 0; i < 6; i++) {
-                    if (i === last) continue; // Skip same button as last
-                    const next = [...curr];
-                    const left = (i + 5) % 6;
-                    const right = (i + 1) % 6;
-                    next[left] = (next[left] + 1) % 3;
-                    next[right] = (next[right] + 1) % 3;
-                    const key = next.join("") + "-" + i;
-                    if (!visited.has(key)) {
-                        visited.add(key);
-                        queue.push({ state: next, steps: [...steps, i], last: i });
-                    }
-                }
-            }
-            alert("解決手順が見つかりませんでした。");
-        }
-
-        document.getElementById("solveBtn").addEventListener("click", solvePuzzle);
-
-        document.getElementById("toggleModeBtn").addEventListener("click", () => {
-            if (state.every(v => v !== null)) {
-                inputPhase = !inputPhase;
-                document.getElementById("solveBtn").style.display = inputPhase ? "none" : "inline-block";
-            } else {
-                alert("すべての円に色を設定してください。");
-            }
-        });
-
-        document.getElementById("resetBtn").addEventListener("click", () => {
-            state = [null, null, null, null, null, null];
-            inputPhase = true;
-            document.getElementById("solveBtn").style.display = "none";
-            updateUI();
-        });
-
-        updateUI();
-    </script>
+    <div id="result-area"></div>
+    <script src="script.js"></script>
 </body>
 </html>
