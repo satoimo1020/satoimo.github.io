@@ -52,7 +52,8 @@
             margin: 10px 0;
         }
 
-        ol, p {
+        ol,
+        p {
             margin: 1em 0;
         }
 
@@ -125,10 +126,10 @@ systemctl status firewalld
 
     <h2>7. PaperMCをダウンロード（例：1.21.8）</h2>
     <pre>
-mkdir paper_1.21.11
-cd paper_1.21.11
-wget https://fill-data.papermc.io/v1/objects/3d806bb668eeb8b592ef17d3e9e8c0c3484e358c09b1f2403bf6ebc928cc6c64/paper-1.21.11-44.jar
-mv paper-1.21.11-44.jar server.jar
+mkdir paper_1.21.8
+cd paper_1.21.8
+wget https://fill-data.papermc.io/v1/objects/f3ec5d5a38179295424311666593b7b9c80710f9df1c716599b27306b438d27d/paper-1.21.8-26.jar
+mv paper-1.21.8-26.jar server.jar
 </pre>
 
     <h2>8. サーバー初回起動（必要ファイル生成）</h2>
@@ -147,13 +148,13 @@ vi eula.txt
     <h2>10. サーバー再起動</h2>
     <pre>java -Xms2560M -Xmx2560M -jar server.jar nogui</pre>
     <div class="note">
-        ※ ラズパイは起動が遅いので、気長に待ちましょう（普通のマシンなら10秒で終わる...）。
+        ※ ラズパイは起動が遅いので、気長に待ちましょう。
     </div>
 
     <h2>11. コマンド入力画面に変化</h2>
     <p>
         起動成功すると、<code>[root@rp4 paper_1.21.8]#</code> が <code>&gt;</code> に変わります。<br>
-        この画面ではMinecraft内に直接コマンドを送信できます。つまり神になる。
+        この画面ではMinecraft内に直接コマンドを送信できます。
     </p>
 
     <h2>12. Minecraft Java Edition で接続</h2>
@@ -162,16 +163,62 @@ vi eula.txt
         <li>「サーバーを追加」を選択</li>
         <li>サーバーアドレスに「ラズパイのIPアドレス」を入力</li>
     </ol>
-    <div class="note">
-        ※ サーバー名は任意でOK
-    </div>
 
-    <h2>13. サーバー停止方法</h2>
+    <h2>13. サーバー停止方法（手動時）</h2>
     <pre>stop</pre>
     <p>とコマンドラインに入力すれば終了。</p>
 
     <hr>
-    <p><strong>以上、Minecraftサーバーの構築手順でした</strong></p>
+
+    <h2>14. サービスの自動起動設定（systemd）</h2>
+    <p>サーバーをバックグラウンドで動かし、OS起動時に自動実行されるようにします。まず <code>screen</code> をインストールします。</p>
+    <pre>yum install -y screen</pre>
+
+    <p>次に、systemd用のユニットファイルを作成します。</p>
+    <pre>vi /etc/systemd/system/mcserver.service</pre>
+
+    <p>以下の内容を貼り付けて保存します：</p>
+    <pre>
+[Unit]
+Description=Minecraft Paper Server
+After=network.target
+
+[Service]
+# 実行ユーザーとディレクトリの設定
+User=almalinux
+WorkingDirectory=/home/almalinux/mcserver/mc-paper-1.21.11/
+Type=forking
+
+# screenセッション内でスクリプトを実行
+ExecStart=/usr/bin/screen -dmS mc-session /bin/bash run.sh
+# 終了時にサーバーへstopコマンドを安全に送る
+ExecStop=/usr/bin/screen -S mc-session -X stuff "stop\015"
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+</pre>
+
+    <p>設定を反映させ、自動起動を有効化・開始します。</p>
+    <pre>
+systemctl daemon-reload
+systemctl enable mcserver
+systemctl start mcserver
+</pre>
+
+    <h2>15. 動作中のコンソール（コマンド画面）に入る方法</h2>
+    <p>systemdで起動しているサーバーの管理画面に接続して、コマンドを打つ方法です。</p>
+    <pre>screen -r mc-session</pre>
+
+    <div class="note">
+        <strong>重要：画面からの抜け方（デタッチ）</strong><br>
+        コンソール画面を閉じて元のシェルに戻るには、<code>Ctrl + A</code> を押した直後に <code>D</code> キーを押してください。<br>
+        ※ <code>Ctrl + C</code> を押すとサーバープロセス自体が終了してしまうので注意してください。
+    </div>
+
+    <hr>
+    <p><strong>以上、Minecraftサーバーの構築および自動起動化の手順でした</strong></p>
 
 </body>
 
