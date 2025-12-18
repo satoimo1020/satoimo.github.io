@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Minecraftサーバー構築手順（Raspberry Pi用）</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 1.8em;
+        }
+
+        h2 {
+            color: #1e6f26;
+            font-size: 1.3em;
+            margin-top: 1.5em;
+        }
+
+        code {
+            background-color: #eee;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-left: 4px solid #2eab3b;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        ol, p {
+            margin: 1em 0;
+        }
+
+        hr {
+            margin-top: 2em;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+                font-size: 16px;
+            }
+
+            pre {
+                font-size: 14px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            h2 {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Minecraft サーバー構築手順（Raspberry Pi用）</h1>
+
+    <h2>1. 管理者権限になる</h2>
+    <pre>su</pre>
+
+    <h2>2. サーバー用ディレクトリ作成</h2>
+    <pre>
+mkdir ~/minecraft
+cd ~/minecraft
+</pre>
+
+    <h2>3. 64ビットOSか確認</h2>
+    <pre>getconf LONG_BIT</pre>
+
+    <h2>4. 授業で入れたリソース食い虫な xrdp を停止</h2>
+    <pre>systemctl stop xrdp</pre>
+
+    <h2>5. Java 21 をインストール</h2>
+    <pre>
+yum install -y java-21-openjdk
+java -version
+</pre>
+
+    <h2>6. ポート25565を開放（Firewall設定）</h2>
+    <pre>
+firewall-cmd --list-all
+firewall-cmd --add-port=25565/tcp --zone=public --permanent
+firewall-cmd --reload
+firewall-cmd --list-all
+</pre>
+
+    <div class="note">
+        <strong>※FirewallDが動作していない場合：</strong>
+        <pre>
+systemctl status firewalld
+systemctl start firewalld
+systemctl status firewalld
+</pre>
+    </div>
+
+    <h2>7. PaperMCをダウンロード（例：1.21.8）</h2>
+    <pre>
+mkdir paper_1.21.8
+cd paper_1.21.8
+wget https://fill-data.papermc.io/v1/objects/f3ec5d5a38179295424311666593b7b9c80710f9df1c716599b27306b438d27d/paper-1.21.8-26.jar
+mv paper-1.21.8-26.jar server.jar
+</pre>
+
+    <h2>8. サーバー初回起動（必要ファイル生成）</h2>
+    <pre>java -Xms2560M -Xmx2560M -jar server.jar nogui</pre>
+    <div class="note">
+        ※ メモリが4GBなので、2.5GB割当て（<code>-Xms</code>/<code>-Xmx</code>）。<br>
+        ※ <code>eula.txt</code> に関するエラーが出ます。
+    </div>
+
+    <h2>9. <code>eula.txt</code> を編集</h2>
+    <pre>
+vi eula.txt
+# eula=false → eula=true に変更
+</pre>
+
+    <h2>10. サーバー再起動</h2>
+    <pre>java -Xms2560M -Xmx2560M -jar server.jar nogui</pre>
+    <div class="note">
+        ※ ラズパイは起動が遅いので、気長に待ちましょう（普通のマシンなら10秒で終わる...）。
+    </div>
+
+    <h2>11. コマンド入力画面に変化</h2>
+    <p>
+        起動成功すると、<code>[root@rp4 paper_1.21.8]#</code> が <code>&gt;</code> に変わります。<br>
+        この画面ではMinecraft内に直接コマンドを送信できます。つまり神になる。
+    </p>
+
+    <h2>12. Minecraft Java Edition で接続</h2>
+    <ol>
+        <li>タイトル画面 → マルチプレイ</li>
+        <li>「サーバーを追加」を選択</li>
+        <li>サーバーアドレスに「ラズパイのIPアドレス」を入力</li>
+    </ol>
+    <div class="note">
+        ※ サーバー名は任意でOK
+    </div>
+
+    <h2>13. サーバー停止方法</h2>
+    <pre>stop</pre>
+    <p>とコマンドラインに入力すれば終了。</p>
+
+    <hr>
+    <p><strong>以上、Minecraftサーバーの構築手順でした</strong></p>
+
+</body>
+
+</html>
