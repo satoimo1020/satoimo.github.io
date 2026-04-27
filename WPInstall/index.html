@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WordPress構築手順書</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f7f6;
+        }
+
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #e67e22;
+            margin-top: 30px;
+            border-left: 5px solid #e67e22;
+            padding-left: 10px;
+        }
+
+        /* コードブロックのコンテナ */
+        .code-container {
+            position: relative;
+            margin: 15px 0;
+        }
+
+        /* コードの見た目（視認性向上） */
+        pre {
+            background-color: #1e1e1e;
+            /* 濃いグレー */
+            color: #d4d4d4;
+            /* 明るいグレー */
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            border: 1px solid #333;
+        }
+
+        code {
+            background: none !important;
+            color: inherit !important;
+            padding: 0 !important;
+        }
+
+        /* コピーボタンのスタイル */
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            background-color: #4a4a4a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover {
+            background-color: #666;
+        }
+
+        .copy-btn.copied {
+            background-color: #27ae60;
+        }
+
+        .note {
+            background-color: #d1ecf1;
+            border-left: 5px solid #0c5460;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .warning {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            color: #856404;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .table-info {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .table-info th,
+        .table-info td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .table-info th {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>WordPress構築手順書</h1>
+    <p>このドキュメントは、Linuxサーバー上にApache、MariaDB、PHPをインストールし、WordPressをセットアップするための手順をまとめたものです。</p>
+
+    <h2>1. システム更新とパッケージのインストール</h2>
+    <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">コピー</button>
+        <pre><code>sudo apt update
+sudo apt install apache2 mariadb-server php libapache2-mod-php php-mysql php-curl php-gd php-mbstring php-xml php-xmlrpc php-soap php-intl php-zip -y</code></pre>
+    </div>
+
+    <h2>2. データベースのセットアップ</h2>
+    <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">コピー</button>
+        <pre><code>sudo mysql -u root
+
+-- MySQLコンソール内での操作
+CREATE DATABASE wordpress_db;
+CREATE USER 'test'@'localhost' IDENTIFIED BY 'test';
+GRANT ALL PRIVILEGES ON wordpress_db.* TO 'test'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;</code></pre>
+    </div>
+
+    <h2>3. WordPress本体のダウンロードと配置</h2>
+    <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">コピー</button>
+        <pre><code>cd /tmp
+wget https://ja.wordpress.org/latest-ja.tar.gz
+tar -xzvf latest-ja.tar.gz
+sudo cp -r wordpress/* /var/www/html/
+sudo rm /var/www/html/index.html</code></pre>
+    </div>
+
+    <h2>4. 権限の設定</h2>
+    <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">コピー</button>
+        <pre><code>sudo chown -R www-data:www-data /var/www/html/
+sudo chmod -R 755 /var/www/html/</code></pre>
+    </div>
+
+    <div class="note">
+        <strong>補足:</strong> 設定を反映させるため、Apacheを再起動することをお勧めします。<br>
+        <code>sudo systemctl restart apache2</code>
+    </div>
+
+    <h2>5. ブラウザでの初期設定</h2>
+    <div class="warning">
+        注意点：ポートフォワーディングを行っているため、ブラウザでアクセスする際は :8080 をアドレスの直後につけること！
+    </div>
+
+    <p>ブラウザから <strong>http://127.0.0.1:8080</strong> にアクセスし、以下の情報を入力してください。</p>
+
+    <table class="table-info">
+        <tr>
+            <th>項目</th>
+            <th>設定値</th>
+        </tr>
+        <tr>
+            <td>データベース名</td>
+            <td><code>wordpress_db</code></td>
+        </tr>
+        <tr>
+            <td>ユーザー名</td>
+            <td><code>test</code></td>
+        </tr>
+        <tr>
+            <td>パスワード</td>
+            <td><code>test</code></td>
+        </tr>
+        <tr>
+            <td>データベースのホスト</td>
+            <td><code>localhost</code></td>
+        </tr>
+    </table>
+
+    <script>
+        function copyCode(button) {
+            const pre = button.nextElementSibling;
+            const text = pre.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                button.innerText = 'コピー完了！';
+                button.classList.add('copied');
+                setTimeout(() => {
+                    button.innerText = 'コピー';
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+    </script>
+
+</body>
+
+</html>
