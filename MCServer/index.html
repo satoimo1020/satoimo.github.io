@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubuntu - Minecraftサーバー構築手順</title>
+    <style>
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+
+        .badge-container {
+            margin-bottom: 12px;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-right: 8px;
+            text-transform: uppercase;
+        }
+
+        .badge-primary {
+            background-color: #16a34a;
+            color: #ffffff;
+        }
+
+        .badge-secondary {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 10px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .description {
+            font-size: 15px;
+            color: #64748b;
+            margin: 0;
+        }
+
+        section {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            /* background-color: #16a34a; */
+            color: #0f172a;
+            font-weight: bold;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .step-title {
+            padding-left: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #0f172a;
+        }
+
+        .step-desc {
+            font-size: 13px;
+            color: #64748b;
+            margin: 16px 0 8px 0;
+            padding-left: 40px;
+        }
+
+        /* ターミナル（CUI風） */
+        .terminal {
+            background-color: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            /* ダークモードJSによる反転を無効化 */
+            isolation: isolate;
+            /* スクロール制御を解除してTIPを外に飛び出せるようにします */
+            overflow: visible;
+        }
+
+        .terminal-header {
+            font-size: 11px;
+            color: #94a3b8;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 6px;
+            margin-bottom: 14px;
+            user-select: none;
+        }
+
+        .cmd-line {
+            margin-bottom: 12px;
+            position: relative;
+            padding-left: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .cmd-line::before {
+            content: "$";
+            position: absolute;
+            left: 0;
+            color: #64748b;
+        }
+
+        .cmd-text {
+            color: #ffffff;
+            font-weight: bold;
+            display: inline-block;
+            vertical-align: middle;
+            max-width: calc(100% - 60px);
+            /* TIPボタン（約40px）の表示スペースを確保 */
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        /* コマンド部分の横スクロールバーをスマート化 */
+        .cmd-text::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .cmd-text::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 2px;
+        }
+
+        /* ホバーTipシステム */
+        .tip-indicator {
+            display: inline-block;
+            background-color: #eab308;
+            color: #451a03;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 1px 6px;
+            border-radius: 4px;
+            margin-left: 10px;
+            cursor: help;
+            position: relative;
+            vertical-align: middle;
+            user-select: none;
+            /* スクロールによってTIPボタン自体が潰れないように固定 */
+            flex-shrink: 0;
+        }
+
+        /* ホバー時に表示されるポップアップボックス（上部に表示変更） */
+        .tip-content {
+            visibility: hidden;
+            position: absolute;
+            right: 0;
+            /* 右端をTIPボタンに合わせ、左側に向けて展開（右はみ出し防止） */
+            top: 140%;
+            /* ボタンの下側にポップアップ */
+            background-color: #edf4ff;
+            /* 視認性の高い不変のダークカラー */
+            color: #001329;
+            padding: 8px 12px;
+            border-radius: 6px;
+            width: 250px;
+            /* 扱いやすいコンパクトな幅 */
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 12px;
+            font-weight: normal;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            line-height: 1.5;
+            white-space: normal;
+            /* テキストは自動折り返し */
+            isolation: isolate;
+        }
+
+        /* 右側に展開する場合（ボタンの左端をベースに右へ） */
+        .tip-content.is-right {
+            left: 0;
+            right: auto;
+        }
+
+        .tip-content.is-right::before {
+            content: "";
+            position: absolute;
+            left: 15px;
+            bottom: 100%;
+            border-width: 6px;
+            border-style: solid;
+            border-color: transparent transparent #334155 transparent;
+        }
+
+        /* 左側に展開する場合（ボタンの右端をベースに左へ） */
+        .tip-content.is-left {
+            right: 0;
+            left: auto;
+        }
+
+        .tip-content.is-left::before {
+            content: "";
+            position: absolute;
+            right: 15px;
+            bottom: 100%;
+            border-width: 6px;
+            border-style: solid;
+            border-color: transparent transparent #334155 transparent;
+        }
+
+        /* ホバー時の挙動（クラス切り替えに対応） */
+        .tip-indicator:hover .tip-content {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* 重要Tip用のアラートボックス（常時表示） */
+        .note-box {
+            background-color: #eef2f6;
+            border-left: 4px solid #16a34a;
+            padding: 14px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #1e1b4b;
+        }
+
+        .note-box-title {
+            font-weight: bold;
+            color: #16a34a;
+            margin-bottom: 6px;
+        }
+
+        /* 設定ファイル編集表示 */
+        .file-edit {
+            margin-top: 16px;
+            background-color: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .file-name {
+            font-size: 12px;
+            font-weight: bold;
+            color: #16a34a;
+            margin-bottom: 8px;
+            font-family: monospace;
+        }
+
+        .file-content {
+            background-color: #020617;
+            padding: 10px 14px;
+            border-radius: 6px;
+            border: 1px solid #111827;
+            color: #cbd5e1;
+            font-family: monospace;
+            font-size: 13px;
+            /* ダークモードJSによる反転を無効化 */
+            isolation: isolate;
+            display: flex;
+            align-items: center;
+        }
+
+        .highlight {
+            color: #facc15;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 50px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+            text-align: center;
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        /* ダークモード変更ボタンを最前面に配置 */
+        .darkmode-toggle {
+            z-index: 10005 !important;
+        }
+
+        /* スマートフォン向け（画面幅 640px 以下）のスタイル定義 */
+        @media (max-width: 640px) {
+            body {
+                padding: 20px 0;
+                /* 外側の左右余白をゼロにし、横幅を使い切る */
+            }
+
+            header {
+                padding: 0 16px 20px 16px;
+                /* ヘッダーテキストが端に寄らないよう左右に余白を確保 */
+                margin-bottom: 24px;
+            }
+
+            section {
+                border-left: none;
+                /* 画面端の線を消してすっきりさせる */
+                border-right: none;
+                border-radius: 0;
+                /* 角丸をなくして画面いっぱいに広げる */
+                padding: 20px 16px;
+                /* セクション内部の左右余白を少し詰める */
+                margin-bottom: 20px;
+            }
+
+            .step-desc {
+                padding-left: 0;
+                /* スマホの横幅を確保するため、説明文の左インデントを解除 */
+            }
+
+            .terminal {
+                padding: 12px;
+                /* ターミナル内の余白を少し狭めてコマンドの視認性を向上 */
+            }
+
+            footer {
+                padding: 20px 16px 0 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <div class="badge-container">
+                <span class="badge badge-primary">Ubuntu 24.04LTS</span>
+                <span class="badge badge-secondary">Minecraft Java Edition 1.20.4</span>
+            </div>
+            <h1>Minecraft サーバー構築手順</h1>
+            <p class="description">
+                Ubuntu上にMinecraft JEのマルチプレイサーバーを構築する手順です。
+            </p>
+        </header>
+
+        <main>
+
+            <section>
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div class="step-title">パッケージリストの更新とアップグレード</div>
+                </div>
+                <p class="step-desc">AWSインスタンスを起動後、SSH接続して最初に行うOSパッケージの更新作業です。</p>
+
+                <div class="terminal">
+                    <div class="terminal-header">Terminal</div>
+
+                    <div class="cmd-line">
+                        <span class="cmd-text">sudo apt update</span>
+                        <div class="tip-indicator">TIP
+                            <div class="tip-content">インストール可能なパッケージの最新リストを取得し、ローカルのデータベースを更新します。</div>
+                        </div>
+                    </div>
+
+                    <div class="cmd-line">
+                        <span class="cmd-text">sudo apt upgrade -y</span>
+                        <div class="tip-indicator">TIP
+                            <div class="tip-content">パッケージを最新バージョンに更新します。-yオプションにより確認プロンプトを自動で承認します。</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Java環境のインストールと作業ディレクトリ準備</div>
+                </div>
+                <p class="step-desc">Minecraftの動作に必要なJava実行環境（JDK）を導入し、専用フォルダを作成します。</p>
+
+                <div class="terminal">
+                    <div class="terminal-header">Terminal</div>
+
+                    <div class="cmd-line">
+                        <span class="cmd-text">sudo apt install -y openjdk-17-jdk</span>
+                        <div class="tip-indicator">TIP
+                            <div class="tip-content">Minecraft 1.20.4はJava 17環境が推奨のため、OpenJDK 17をインストールします。</div>
+                        </div>
+                    </div>
+
+                    <div class="cmd-line">
+                        <span class="cmd-text">cd /home/ubuntu</span>
+                    </div>
+
+                    <div class="cmd-line">
+                        <span class="cmd-text">mkdir mc</span>
+                        <div class="tip-indicator">TIP
+                            <div class="tip-content">/home/ubuntu/ にMinecraftサーバー用のディレクトリを作成します。</div>
+                        </div>
+                    </div>
+
+                    <div class="cmd-line">
+                        <span class="cmd-text">cd mc</span>
+                    </div>
+
+                    <div class="cmd-line">
+                        <span class="cmd-text">wget
+                            https://piston-data.mojang.com/v1/objects/8dd1a28015f51b1803213892b50b7b4fc76e594d/server.jar</span>
+                        <div class="tip-indicator">TIP
+                            <div class="tip-content">Minecraft公式から、バージョン1.20.4のサーバー実行ファイル（server.jar）を直接ダウンロードします。</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div class="step-title">サーバーの初回起動と各種設定</div>
+                </div>
+                <p class="step-desc">一度サーバーを起動して必要な設定ファイルを自動生成させ、利用規約や認証設定を変更します。</p>
+
+                <div class="note-box">
+                    <div class="note-box-title">💡 メモリ設定に関するTips</div>
+                    Xmx（最大メモリ）とXms（最小メモリ）の割当量をどちらも同じ値に揃えることで、実行中の動的なメモリ再確保プロセスが抑えられ、サーバーのパフォーマンスが僅かに向上するとされています。
+                </div>
+
+                <div class="terminal">
+                    <div class="terminal-header">Terminal</div>
+                    <div class="cmd-line">
+                        <span class="cmd-text">java -Xmx3G -Xms3G -jar server.jar nogui</span>
+                        <div class="tip-indicator">TIP
+                            <div class="tip-content">Xmx3G: 最大メモリ3GB / Xms3G: 最小メモリ3GB / nogui:
+                                GUI画面を表示せずCUI環境のみで起動。初回はeula.txt生成後に自動停止します。</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="file-edit">
+                    <div class="file-name">① 利用規約への同意設定 (eula.txt)</div>
+                    <div class="terminal" style="margin-bottom: 8px;">
+                        <div class="cmd-line"><span class="cmd-text">nano eula.txt</span></div>
+                    </div>
+                    <div class="file-content">
+                        eula=<span class="highlight">true</span>
+                        <div class="tip-indicator" style="margin-left: 20px;">TIP
+                            <div class="tip-content">falseからtrueに変更することで規約に同意し、サーバーの起動が可能になります。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="file-edit">
+                    <div class="file-name">② サーバープロパティの編集 (server.properties)</div>
+                    <div class="terminal" style="margin-bottom: 8px;">
+                        <div class="cmd-line"><span class="cmd-text">nano server.properties</span></div>
+                    </div>
+                    <div class="file-content">
+                        online-mode=<span class="highlight">false</span>
+                        <div class="tip-indicator" style="margin-left: 20px;">TIP
+                            <div class="tip-content">今回は非正規クライアント（TLauncherなど）を利用するため、Microsoftアカウントによる認証を無効化します。</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <div class="step-title">本起動と停止コマンド</div>
+                </div>
+
+                <p class="step-desc">設定が完了したら再度起動を行います。</p>
+                <p class="step-desc">Done (10.818s)! For help, type "help" が出れば起動成功です。</p>
+                <p class="step-desc">Minecraftクライアントを持っている場合は、タイトル→マルチプレイ→サーバーを追加 から接続してみましょう。</p>
+                <p class="step-desc">サーバー名：任意<br>サーバーアドレス：AWSのパブリックIP</p>
+
+                <div class="terminal">
+                    <div class="terminal-header">Terminal</div>
+
+                    <div class="cmd-line">
+                        <span class="cmd-text">java -Xmx3G -Xms3G -jar server.jar nogui</span>
+                    </div>
+
+                    <div class="cmd-line"
+                        style="border-top: 1px solid #1e293b; padding-top: 12px; margin-top: 12px; transform: none; list-style: none;">
+                        <span class="cmd-text" style="color: #f43f5e;">stop</span>
+                        <div class="tip-indicator">TIP
+                            <div class="tip-content">Minecraftサーバー内の終了コマンドです。ワールドデータを保存して安全に停止します。</div>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="step-desc">stopコマンドを実行し、Linuxのプロンプトに戻ることを確認してください。</p>
+            </section>
+
+        </main>
+
+        <footer>
+            Minecraft Server Setup Guide - Rei IMABAYASHI
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+    <script>
+        function addDarkmodeWidget() {
+            const options = {
+                bottom: '32px',
+                right: '32px',
+                time: '0.3s',
+                mixColor: '#fff',
+                backgroundColor: '#fff',
+                buttonColorDark: '#0f172a',
+                buttonColorLight: '#fff',
+                saveInCookies: true,
+                label: '🌓',
+                autoMatchOsTheme: true
+            }
+            const darkmode = new Darkmode(options);
+            darkmode.showWidget();
+        }
+        window.addEventListener('load', addDarkmodeWidget);
+
+        // TIPの展開方向を位置に応じて自動で切り替えるスクリプト
+        document.querySelectorAll('.tip-indicator').forEach(indicator => {
+            indicator.addEventListener('mouseenter', () => {
+                const content = indicator.querySelector('.tip-content');
+                if (!content) return;
+
+                // ボタンの画面上の位置を取得
+                const rect = indicator.getBoundingClientRect();
+                const windowWidth = window.innerWidth;
+
+                // ボタンが画面の中央より左側にあるか右側にあるかを判定
+                if (rect.left < windowWidth / 2) {
+                    // 左側にあるなら右に展開
+                    content.classList.remove('is-left');
+                    content.classList.add('is-right');
+                } else {
+                    // 右側にあるなら左に展開
+                    content.classList.remove('is-right');
+                    content.classList.add('is-left');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
