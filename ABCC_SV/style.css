@@ -1,0 +1,551 @@
+/* スムーズスクロールを有効化 */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #f8fafc;
+    color: #334155;
+    font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+    margin: 0;
+    padding: 40px 20px;
+    font-size: 14px;
+    line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* 目次（ナビゲーション）の共通基本スタイル */
+.sidebar {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.sidebar h2 {
+    font-size: 15px;
+    font-weight: bold;
+    color: #0f172a;
+    margin: 0 0 16px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #242424;
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar li {
+    margin-bottom: 12px;
+}
+
+.sidebar a {
+    color: #475569;
+    text-decoration: none;
+    font-size: 13px;
+    display: block;
+    line-height: 1.4;
+    transition: color 0.2s;
+}
+
+.sidebar a:hover {
+    color: #16a34a;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+header {
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+    transition: border-color 0.3s ease;
+}
+
+.badge-container {
+    margin-bottom: 12px;
+}
+
+.badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-right: 8px;
+    text-transform: uppercase;
+}
+
+.badge-primary {
+    background-color: #16a34a;
+    color: #ffffff;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.badge-secondary {
+    background-color: #e2e8f0;
+    color: #475569;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 10px 0;
+    letter-spacing: -0.5px;
+    transition: color 0.3s ease;
+}
+
+.description {
+    font-size: 15px;
+    color: #64748b;
+    margin: 0;
+    transition: color 0.3s ease;
+}
+
+section {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 30px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    /* スクロール時の余白を確保 */
+    scroll-margin-top: 40px;
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.step-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    color: #0f172a;
+    font-weight: bold;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+.step-title {
+    padding-left: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #0f172a;
+    transition: color 0.3s ease;
+}
+
+.step-desc {
+    font-size: 13px;
+    color: #343434;
+    margin: 16px 0 8px 0;
+    padding-left: 40px;
+    transition: color 0.3s ease;
+}
+
+/* ターミナル（CUI風） */
+.terminal {
+    background-color: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 8px;
+    padding: 16px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    /* セクションごとに横スクロールを発生させる */
+    overflow-x: auto;
+    transition: border-color 0.3s ease;
+}
+
+.terminal-header {
+    font-size: 11px;
+    color: #94a3b8;
+    border-bottom: 1px solid #1e293b;
+    padding-bottom: 6px;
+    margin-bottom: 14px;
+    user-select: none;
+}
+
+.cmd-line {
+    margin-bottom: 12px;
+    position: relative;
+    padding-left: 16px;
+    display: flex;
+    align-items: center;
+    /* スクロールした際もすべての行の幅を揃えて余白を維持する */
+    width: max-content;
+    min-width: 100%;
+    box-sizing: border-box;
+}
+
+.cmd-line::before {
+    content: "$";
+    position: absolute;
+    left: 0;
+    color: #64748b;
+}
+
+.cmd-text {
+    color: #ffffff;
+    font-weight: bold;
+    display: inline-block;
+    vertical-align: middle;
+    /* 個別の横スクロールを解除 */
+    white-space: nowrap;
+}
+
+/* ホバーTipシステム */
+.tip-indicator {
+    display: inline-block;
+    background-color: #eab308;
+    color: #451a03;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 1px 6px;
+    border-radius: 4px;
+    margin-left: 10px;
+    cursor: help;
+    position: relative;
+    vertical-align: middle;
+    user-select: none;
+    /* スクロールによってTIPボタン自体が潰れないように固定 */
+    flex-shrink: 0;
+}
+
+/* ホバー時に表示されるポップアップボックス */
+.tip-content {
+    visibility: hidden;
+    /* ターミナルのスクロールによる見切れを防ぐため、画面基準の固定配置に変更 */
+    position: fixed;
+    background-color: #edf4ff;
+    color: #001329;
+    padding: 8px 12px;
+    border-radius: 6px;
+    width: 250px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+    /* 最前面に表示 */
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.2s ease, visibility 0.2s ease, background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    line-height: 1.5;
+    white-space: normal;
+}
+
+/* 矢印（上向きに固定） */
+.tip-content::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent transparent #edf4ff transparent;
+}
+
+/* 右側に展開する場合の矢印位置 */
+.tip-content.is-right::before {
+    left: 15px;
+    right: auto;
+}
+
+/* 左側に展開する場合の矢印位置 */
+.tip-content.is-left::before {
+    right: 15px;
+    left: auto;
+}
+
+/* ホバー時の挙動 */
+.tip-indicator:hover .tip-content {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* 重要Tip用のアラートボックス（常時表示） */
+.note-box {
+    background-color: #ebfff2;
+    border-left: 4px solid #16a34a;
+    padding: 14px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 20px;
+    font-size: 13px;
+    color: #1e1b4b;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.note-box-title {
+    font-weight: bold;
+    color: #107732;
+    margin-bottom: 6px;
+    transition: color 0.3s ease;
+}
+
+/* 設定ファイル編集表示 */
+.file-edit {
+    margin-top: 16px;
+    background-color: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.file-name {
+    font-size: 12px;
+    font-weight: bold;
+    color: #107732;
+    margin-bottom: 8px;
+    font-family: monospace;
+    transition: color 0.3s ease;
+}
+
+.file-content {
+    background-color: #020617;
+    padding: 10px 14px;
+    border-radius: 6px;
+    border: 1px solid #111827;
+    color: #cbd5e1;
+    font-family: monospace;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+}
+
+.highlight {
+    color: #facc15;
+    font-weight: bold;
+}
+
+footer {
+    margin-top: 50px;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 20px;
+    text-align: center;
+    font-size: 11px;
+    color: #94a3b8;
+    transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+/* ==========================================================================
+   【新規実装】1から自作するダークモード用UI・カラーコントロールCSS
+   ========================================================================== */
+/* 手動切り替えボタンの基本スタイル */
+.darkmode-toggle {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    font-size: 22px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10005;
+    user-select: none;
+    outline: none;
+}
+
+.darkmode-toggle:hover {
+    transform: scale(1.05);
+}
+
+/* ─── ダークモード有効化（body.dark-mode）時の各要素のカラー定義 ─── */
+body.dark-mode {
+    background-color: #101010;
+    color: #cbd5e1;
+}
+
+/* 切り替えボタン自体の色の変化 */
+body.dark-mode .darkmode-toggle {
+    background-color: #1e293b;
+    color: #f8fafc;
+    border-color: #334155;
+}
+
+/* セクション枠・サイドバー */
+body.dark-mode section,
+body.dark-mode .sidebar {
+    background-color: #141414;
+    border-color: #242424;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+/* タイトル・主要見出し・ステップ数字 */
+body.dark-mode h1,
+body.dark-mode .step-title,
+body.dark-mode .sidebar h2,
+body.dark-mode .step-number {
+    color: #f8fafc;
+    /* 鮮明な白 */
+}
+
+/* サブテキスト・説明文・フッター */
+body.dark-mode .description,
+body.dark-mode .step-desc,
+body.dark-mode footer {
+    color: #e4e4e4;
+}
+
+/* サイドバー内のリンク */
+body.dark-mode .sidebar h2 {
+    border-bottom-color: #acabab;
+    /* ダークに映える新緑カラー */
+}
+
+body.dark-mode .sidebar a {
+    color: #cbd5e1;
+}
+
+body.dark-mode .sidebar a:hover {
+    color: #4ade80;
+}
+
+/* 各種バッジ */
+body.dark-mode .badge-primary {
+    background-color: #4ade80;
+    color: #0b0f19;
+    /* 反転させて見やすさを確保 */
+}
+
+body.dark-mode .badge-secondary {
+    background-color: #334155;
+    color: #cbd5e1;
+}
+
+/* 注意書き（Note Box） */
+body.dark-mode .note-box {
+    background-color: #001d0c;
+    border-left-color: #4ade80;
+    color: #e2e8f0;
+}
+
+body.dark-mode .note-box-title {
+    color: #4ade80;
+}
+
+/* 設定ファイル編集エリア */
+body.dark-mode .file-edit {
+    background-color: #0e0e0e;
+    border-color: #2a2a2a;
+}
+
+body.dark-mode .file-name {
+    color: #4ade80;
+}
+
+/* ターミナル外枠線 */
+body.dark-mode .terminal {
+    border-color: #334155;
+}
+
+/* ツールチップ（ホバーTip） */
+body.dark-mode .tip-content {
+    background-color: #1e293b;
+    color: #f8fafc;
+    border: 1px solid #334155;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .tip-content::before {
+    border-color: transparent transparent #1e293b transparent;
+}
+
+/* PC・大画面向けのレイアウト（目次を左ペインに固定表示） */
+@media (min-width: 1200px) {
+    body {
+        padding-left: 340px;
+    }
+
+    .container {
+        margin: 0;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 40px;
+        left: 40px;
+        width: 260px;
+        max-height: calc(100vh - 80px);
+        overflow-y: auto;
+    }
+}
+
+/* 画面幅が1200px未満（PCでのウィンドウ分割、タブレット、スマホなど幅が足りない場合） */
+@media (max-width: 1199px) {
+    .sidebar {
+        position: static;
+        width: 100%;
+        margin-bottom: 30px;
+    }
+}
+
+/* スマートフォン向け（画面幅 640px 以下）のスタイル定義 */
+@media (max-width: 640px) {
+    body {
+        padding: 20px 0;
+    }
+
+    .sidebar {
+        border-left: none;
+        border-right: none;
+        border-radius: 0;
+        padding: 20px 16px;
+        margin-bottom: 20px;
+    }
+
+    header {
+        padding: 0 16px 20px 16px;
+        margin-bottom: 24px;
+    }
+
+    section {
+        border-left: none;
+        border-right: none;
+        border-radius: 0;
+        padding: 20px 16px;
+        margin-bottom: 20px;
+    }
+
+    .step-desc {
+        padding-left: 0;
+    }
+
+    .terminal {
+        padding: 12px;
+    }
+
+    footer {
+        padding: 20px 16px 0 16px;
+    }
+
+    .darkmode-toggle {
+        bottom: 20px;
+        right: 20px;
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
+    }
+}

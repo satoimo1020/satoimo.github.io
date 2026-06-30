@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubuntu - Zabbixサーバー構築手順</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <div class="badge-container">
+                <span class="badge badge-primary">Ubuntu 24.04LTS</span>
+                <span class="badge badge-secondary">Zabbix 7.0 LTS</span>
+            </div>
+            <h1>Zabbix サーバー構築手順</h1>
+            <p class="description">
+                test1（Zabbixサーバー）に、Zabbixサーバー、Webフロントエンド、データベース（MySQL）を構築する
+            </p>
+        </header>
+
+        <nav class="sidebar">
+            <h2>目次</h2>
+            <ul>
+                <li><a href="#step-1">1. Zabbixリポジトリの登録</a></li>
+                <li><a href="#step-2">2. 必要なパッケージをインストール</a></li>
+                <li><a href="#step-3">3. データベースの初期設定</a></li>
+                <li><a href="#step-4">4. 初期データのインポート</a></li>
+                <li><a href="#step-5">5. Zabbixサーバーの設定編集</a></li>
+                <li><a href="#step-6">6. サービスの起動と有効化</a></li>
+                <li><a href="#step-7">7. WebUIでの初期セットアップ</a></li>
+                <li><a href="#step-8">2 監視対象 (Ubuntu Desktop 24 / test2) の設定</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <section id="step-1">
+                <div class="step-header">
+                    <div class="step-number">1-1</div>
+                    <div class="step-title">Zabbixリポジトリの登録</div>
+                </div>
+                <p class="step-desc">Zabbix公式のリポジトリをシステムに追加する。wgetで取得するファイルはインストール後、不要になるため tmp ディレクトリにダウンロードする</p>
+
+                <div class="terminal">
+                    <div class="terminal-header">Terminal</div>
+
+                    <div class="cmd-line">
+                        <span class="cmd-text">cd /tmp</span>
+                    </div>
+
+                    <div class="cmd-line">
+                        <span class="cmd-text">wget
+                            https://repo.zabbix.com/zabbix/7.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.0+ubuntu24.04_all.deb</span>
+                        <div class="tip-indicator">TIP
+                            <div class="tip-content">Ubuntu 24.04用のZabbix 7.0公式リポジトリパッケージをダウンロード</div>
+                        </div>
+                    </div>
+
+                    <div class="cmd-line">
+                        <span class="cmd-text">sudo dpkg -i zabbix-release_latest_7.0+ubuntu24.04_all.deb</span>
+                        <div class="tip-indicator">TIP
+                            <div class="tip-content">ダウンロードしたリポジトリパッケージをシステムにインストール</div>
+                        </div>
+                    </div>
+
+                    <div class="cmd-line">
+                        <span class="cmd-text">sudo apt update</span>
+                        <div class="tip-indicator">TIP
+                            <div class="tip-content">新しく追加されたZabbixリポジトリのパッケージリストを同期</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="step-2">
+                <div class="step-header">
+                    <div class="step-number">1-2</div>
+                    <div class="step-title">必要なパッケージをインストール</div>
+                </div>
+                <p class="step-desc">Zabbixサーバー、フロントエンド、Apache、およびZabbixエージェントを一括でインストール</p>
+
+                <div class="note-box">
+                    <div class="note-box-title">⚠️ mysql-serverに関する注意事項</div>
+                    Ubuntu
+                    24.04にZabbix用のMySQLを導入する際、すでに新しいバージョンのMySQLが存在する状態で、それよりも古いバージョンのMySQLを上書きインストールしようとすると、データの互換性がなくなりシステムがフリーズモードに移行するため、新たに
+                    mysql-server はインストールしないように（今回は既にインストール済みのため除外）
+                </div>
+
+                <div class="terminal">
+                    <div class="terminal-header">Terminal</div>
+
+                    <div class="cmd-line">
+                        <span class="cmd-text">sudo apt install -y zabbix-server-mysql zabbix-frontend-php
+                            zabbix-apache-conf zabbix-sql-scripts zabbix-agent2</span>
+                        <div class="tip-indicator">TIP
+                            <div class="tip-content">Zabbixに必要な各種コンポーネントをインストール（-yで自動承認）</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="step-3">
+                <div class="step-header">
+                    <div class="step-number">1-3</div>
+                    <div class="step-title">データベースの初期設定</div>
+                </div>
+                <p class="step-desc">MySQLにログインし、Zabbix用のデータベースとユーザーを作成する</p>
+
+                <div class="terminal">
+                    <div class="terminal-header">Terminal</div>
+                    <div class="cmd-line">
+                        <span class="cmd-text">sudo mysql</span>
+                        <div class="tip-indicator">TIP
+                            <div class="tip-content">MySQLにroot権限でログイン（パスワードレス、または設定したrootパスワードを入力）</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="file-edit">
+                    <div class="file-name">MySQL プロンプト内でのSQL実行</div>
+                    <p class="step-desc" style="padding-left: 0; margin-bottom: 8px;">※ 'password'
+                        部分は任意のパスワードに置き換えて設定</p>
+                    <div class="file-content"
+                        style="display: block; white-space: pre; overflow-x: auto; padding: 14px;">create database zabbix character set utf8mb4 collate utf8mb4_bin;
+create user zabbix@localhost identified by '<span class="highlight">password</span>';
+grant all privileges on zabbix.* to zabbix@localhost;
+set global log_bin_trust_function_creators = 1;
+quit;</div>
+                </div>
+            </section>
+
+            <section id="step-4">
+                <div class="step-header">
+                    <div class="step-number">1-4</div>
+                    <div class="step-title">初期データのインポート</div>
+                </div>
+                <p class="step-desc">Zabbixが提供する初期スキーマとデータを、先ほど作成したデータベースに流し込む</p>
+
+                <div class="terminal">
+                    <div class="terminal-header">Terminal</div>
+
+                    <div class="cmd-line">
+                        <span class="cmd-text">zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql
+                            --default-character-set=utf8mb4 -uzabbix -p zabbix</span>
+                        <div class="tip-indicator">TIP
+                            <div class="tip-content">パスワードを求められるため、[1-3]で設定した zabbix ユーザーのパスワードを入力。数分程かかる場合がある</div>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="step-desc" style="margin-top: 16px;">インポートが終わったら、データベースの関数作成に関する一時設定を元に戻す</p>
+
+                <div class="terminal">
+                    <div class="terminal-header">Terminal</div>
+                    <div class="cmd-line">
+                        <span class="cmd-text">sudo mysql</span>
+                    </div>
+                </div>
+
+                <div class="file-edit">
+                    <div class="file-name">MySQL プロンプト内でのSQL実行</div>
+                    <div class="file-content"
+                        style="display: block; white-space: pre; overflow-x: auto; padding: 14px;">set global log_bin_trust_function_creators = 0;
+quit;</div>
+                </div>
+            </section>
+
+            <section id="step-5">
+                <div class="step-header">
+                    <div class="step-number">1-5</div>
+                    <div class="step-title">Zabbixサーバーの設定編集</div>
+                </div>
+                <p class="step-desc">Zabbixサーバーの構成ファイルを編集し、データベースのパスワードを指定</p>
+
+                <div class="file-edit">
+                    <div class="file-name">① 構成ファイルの編集</div>
+                    <div class="terminal" style="margin-bottom: 8px;">
+                        <div class="cmd-line"><span class="cmd-text">sudo nano /etc/zabbix/zabbix_server.conf</span>
+                        </div>
+                    </div>
+                    <p class="step-desc" style="padding-left: 0; margin-bottom: 8px;">ファイル内で `DBPassword=`
+                        の行を探して、コメントアウト（#）を外し、データベースのパスワードを指定</p>
+                    <div class="file-content">
+                        DBPassword=<span class="highlight">password</span>
+                        <div class="tip-indicator" style="margin-left: 20px;">TIP
+                            <div class="tip-content">[1-3]で設定した zabbix ユーザーのパスワードを記述</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="step-6">
+                <div class="step-header">
+                    <div class="step-number">1-6</div>
+                    <div class="step-title">サービスの起動と有効化</div>
+                </div>
+                <p class="step-desc">各種サービスを起動し、OS起動時に自動実行されるよう設定</p>
+
+                <div class="terminal">
+                    <div class="terminal-header">Terminal</div>
+                    <div class="cmd-line">
+                        <span class="cmd-text">sudo systemctl restart zabbix-server zabbix-agent2 apache2 mysql</span>
+                    </div>
+                    <div class="cmd-line">
+                        <span class="cmd-text">sudo systemctl enable zabbix-server zabbix-agent2 apache2 mysql</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="step-7">
+                <div class="step-header">
+                    <div class="step-number">1-7</div>
+                    <div class="step-title">WebUIでの初期セットアップ</div>
+                </div>
+                <p class="step-desc">ホストOSのブラウザから、以下のURLにアクセスする。</p>
+                <p class="step-desc" style="font-weight: bold; color: #3b82f6; padding-left: 0;">
+                    http://192.168.56.201:8080/zabbix</p>
+
+                <div class="file-edit" style="margin-top: 16px;">
+                    <div class="file-name">💡 セットアップウィザードの手順</div>
+                    <div class="file-content" style="padding: 16px;">
+                        <ol style="margin: 0; padding-left: 20px; line-height: 1.8;">
+                            <li><strong>Welcome:</strong> 言語を選択（多分英語しか選べない）して「Next step」</li>
+                            <li><strong>Check of pre-requisites:</strong> 全て「OK」であることを確認して「Next step」</li>
+                            <li><strong>Configure DB connection:</strong> Password 欄に [1-3] で決めたパスワードを入力して「Next step」
+                            </li>
+                            <li><strong>Settings:</strong> 任意のサーバー名を入力して「Next step」</li>
+                            <li><strong>Install:</strong> 設定内容を確認して「Finish」</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="note-box" style="margin-top: 16px;">
+                    <div class="note-box-title">🔐 初期ログイン情報</div>
+                    <ul style="margin: 0; padding-left: 20px;">
+                        <li><strong>ユーザー名:</strong> Admin <span style="color: #f43f5e;">(※イニシャルが大文字になっているので注意)</span>
+                        </li>
+                        <li><strong>パスワード:</strong> zabbix</li>
+                    </ul>
+                </div>
+            </section>
+
+            <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 40px 0;">
+
+            <section id="step-8" style="text-align: center; padding: 20px 0;">
+                <h2>2 監視対象 (Ubuntu Desktop 24 / test2) の設定</h2>
+                <a href="../Ubuntu_Zabbix_Client/index.html">
+                    Client設定手順へ進む ➔
+                </a>
+            </section>
+        </main>
+
+        <footer>
+            Zabbix Server Setup Guide - Rei IMABAYASHI
+        </footer>
+    </div>
+
+    <button id="darkmode-toggle" class="darkmode-toggle" aria-label="ダークモード切り替え">🌓</button>
+
+    <script src="../script.js"></script>
+</body>
+
+</html>
