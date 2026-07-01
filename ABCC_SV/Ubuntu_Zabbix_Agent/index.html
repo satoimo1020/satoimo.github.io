@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubuntu - Zabbix監視対象設定手順</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <div class="badge-container">
+                <span class="badge badge-primary">Ubuntu 24.04LTS</span>
+                <span class="badge badge-secondary">Zabbix 7.0 LTS</span>
+            </div>
+            <h1>Zabbix 導入手順</h1>
+            <p class="description">
+                サーバー応用演習 ch4_Zabbix編（2026年7月1日 ～）
+            </p>
+        </header>
+
+        <nav class="sidebar">
+            <h2>目次</h2>
+            <ul>
+                <li><a href="#step-2-1">2-1. Zabbixリポジトリの登録</a></li>
+                <li><a href="#step-2-2">2-2. Zabbix Agent のインストール</a></li>
+                <li><a href="#step-2-3">2-3. エージェント設定ファイルの編集</a></li>
+                <li><a href="#step-2-4">2-4. サービスの起動と有効化</a></li>
+                <li><a href="#step-3-1">3-1. Zabbix Web画面でのホスト登録</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <div class="main-title-block">
+                <h2>2 監視対象 (test2 / Ubuntu Desktop) の設定</h2>
+                <p class="step-desc">
+                    監視対象の2台には、データを収集するための Zabbix Agent をインストールする。この作業は両方のマシンで行う。
+                </p>
+            </div>
+
+            <section id="step-2-1">
+                <div class="step-header">
+                    <div class="step-number">2-1</div>
+                    <div class="step-title">Zabbixリポジトリの登録</div>
+                </div>
+                <p class="step-desc">サーバー側と同様に、公式リポジトリを追加する。</p>
+
+                <div class="terminal">
+                    <div class="terminal-header">Terminal</div>
+                    <div class="cmd-line">
+                        <span class="cmd-text">cd /tmp</span>
+                    </div>
+                    <div class="cmd-line">
+                        <span class="cmd-text">wget https://repo.zabbix.com/zabbix/7.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_7.0-1+ubuntu24.04_all.deb</span>
+                    </div>
+                    <div class="cmd-line">
+                        <span class="cmd-text">sudo dpkg -i zabbix-release_7.0-1+ubuntu24.04_all.deb</span>
+                    </div>
+                    <div class="cmd-line">
+                        <span class="cmd-text">sudo apt update</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="step-2-2">
+                <div class="step-header">
+                    <div class="step-number">2-2</div>
+                    <div class="step-title">Zabbix Agent のインストール</div>
+                </div>
+                <p class="step-desc">Zabbix Agent をインストールする。</p>
+
+                <div class="terminal">
+                    <div class="terminal-header">Terminal</div>
+                    <div class="cmd-line">
+                        <span class="cmd-text">sudo apt install zabbix-agent -y</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="step-2-3">
+                <div class="step-header">
+                    <div class="step-number">2-3</div>
+                    <div class="step-title">エージェント設定ファイルの編集</div>
+                </div>
+                <p class="step-desc">Zabbixサーバー（test1）からの通信を受け入れられるよう、内部ネットワークのIPアドレスを指定する。</p>
+
+                <div class="terminal">
+                    <div class="terminal-header">Terminal</div>
+                    <div class="cmd-line">
+                        <span class="cmd-text">sudo nano /etc/zabbix/zabbix_agent.conf</span>
+                    </div>
+                </div>
+
+                <p class="step-desc">※各設定項目は分散した場所に存在する。</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>設定項目</th>
+                            <th>test2 の設定値</th>
+                            <th>Ubuntu Desktop の設定値</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Server=</td>
+                            <td>192.168.2.201</td>
+                            <td>192.168.1.201</td>
+                        </tr>
+                        <tr>
+                            <td>ServerActive=</td>
+                            <td>192.168.2.201</td>
+                            <td>192.168.1.201</td>
+                        </tr>
+                        <tr>
+                            <td>Hostname=</td>
+                            <td>test2</td>
+                            <td>test3</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="step-2-4">
+                <div class="step-header">
+                    <div class="step-number">2-4</div>
+                    <div class="step-title">サービスの起動と有効化</div>
+                </div>
+                <p class="step-desc">Zabbix Agent サービスを起動し、自動起動を有効化する。</p>
+
+                <div class="terminal">
+                    <div class="terminal-header">Terminal</div>
+                    <div class="cmd-line">
+                        <span class="cmd-text">sudo systemctl restart zabbix-agent</span>
+                    </div>
+                    <div class="cmd-line">
+                        <span class="cmd-text">sudo systemctl enable zabbix-agent</span>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+
+            <div class="main-title-block">
+                <h2>3 Zabbix WebUI での設定</h2>
+            </div>
+
+            <section id="step-3-1">
+                <div class="step-header">
+                    <div class="step-number">3-1</div>
+                    <div class="step-title">Zabbix Web画面でのホスト登録</div>
+                </div>
+                <p class="step-desc">
+                    最後に、test1 のWeb管理画面（<a href="http://192.168.56.201/zabbix" target="_blank">http://192.168.56.201/zabbix</a>）にログインし、2台の監視対象を登録する。
+                </p>
+
+                <div class="file-edit">
+                    <div class="file-name">💡 ホスト登録の手順</div>
+                    <div class="file-content">
+                        <ol>
+                            <li>左メニューの <strong>「データ収集 (Data collection)」</strong> ＞ <strong>「ホスト (Hosts)」</strong> を開き、右上の <strong>「ホストの作成 (Create host)」</strong> をクリックする。</li>
+                            <li>以下の通りに入力する。</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>設定項目</th>
+                            <th>test2 の設定値</th>
+                            <th>Ubuntu Desktop の設定値</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ホスト名</td>
+                            <td>test2 <span class="attention-text">(※Agent設定のHostnameと一致させる)</span></td>
+                            <td>test3 <span class="attention-text">(※Agent設定のHostnameと一致させる)</span></td>
+                        </tr>
+                        <tr>
+                            <td>テンプレート</td>
+                            <td>Linux by Zabbix agent</td>
+                            <td>Linux by Zabbix agent</td>
+                        </tr>
+                        <tr>
+                            <td>ホストグループ</td>
+                            <td>Virtual machines</td>
+                            <td>Virtual machines</td>
+                        </tr>
+                        <tr>
+                            <td>インターフェース</td>
+                            <td>
+                                「追加」ボタン ＞ 「エージェント」を選択<br>
+                                <strong>IPアドレス:</strong> 192.168.2.202
+                            </td>
+                            <td>
+                                「追加」ボタン ＞ 「エージェント」を選択<br>
+                                <strong>IPアドレス:</strong> 192.168.1.203
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+
+        <footer>
+            Zabbix Client Setup Guide - Rei IMABAYASHI
+        </footer>
+    </div>
+
+    <button id="darkmode-toggle" class="darkmode-toggle" aria-label="ダークモード切り替え">🌓</button>
+
+    <script src="../script.js"></script>
+</body>
+
+</html>

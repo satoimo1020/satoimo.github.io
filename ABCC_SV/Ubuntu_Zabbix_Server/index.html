@@ -16,9 +16,9 @@
                 <span class="badge badge-primary">Ubuntu 24.04LTS</span>
                 <span class="badge badge-secondary">Zabbix 7.0 LTS</span>
             </div>
-            <h1>Zabbix サーバー構築手順</h1>
+            <h1>Zabbix 導入手順</h1>
             <p class="description">
-                test1（Zabbixサーバー）に、Zabbixサーバー、Webフロントエンド、データベース（MySQL）を構築する
+                サーバー応用演習 ch4_Zabbix編（2026年7月1日 ～）
             </p>
         </header>
 
@@ -39,12 +39,20 @@
         </nav>
 
         <main>
+
+            <div class="main-title-block">
+                <h2>test1 (Zabbixサーバー) の構築</h2>
+                <p class="step-desc" style="padding-left: 0; margin-bottom: 24px;">
+                    test1（Zabbixサーバー）に、Zabbixサーバー、Webフロントエンド、データベース（MariaDB）を構築する。
+                </p>
+            </div>
+
             <section id="step-1">
                 <div class="step-header">
                     <div class="step-number">1-1</div>
                     <div class="step-title">Zabbixリポジトリの登録</div>
                 </div>
-                <p class="step-desc">Zabbix公式のリポジトリをシステムに追加する。wgetで取得するファイルはインストール後、不要になるため tmp ディレクトリにダウンロードする</p>
+                <p class="step-desc">Zabbix公式のリポジトリをシステムに追加する。wgetで取得するファイルはインストール後、不要になるため tmp ディレクトリにダウンロードする。</p>
 
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
@@ -88,7 +96,7 @@
                     <div class="note-box-title">⚠️ DBに関する注意事項</div>
                     Ubuntu
                     すでに新しいバージョンのMariaDBが存在する状態で、それよりも古いバージョンのMariaDBを上書きインストールしようとすると、データの互換性がなくなってシステムがフリーズするみたい。
-                    新たにインストールしないように（今回は既にインストール済みのため除外）
+                    新たにインストールしないように。（今回は既にインストール済みのため除外）
                 </div>
 
                 <div class="terminal">
@@ -109,7 +117,7 @@
                     <div class="step-number">1-3</div>
                     <div class="step-title">データベースの初期設定</div>
                 </div>
-                <p class="step-desc">MariaDBに接続し、Zabbix用のデータベースとユーザーを作成する</p>
+                <p class="step-desc">MariaDBに接続し、Zabbix用のデータベースとユーザーを作成する。</p>
 
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
@@ -124,7 +132,7 @@
                 <div class="file-edit">
                     <div class="file-name">MariaDB プロンプト内でのSQL実行</div>
                     <p class="step-desc" style="padding-left: 0; margin-bottom: 8px;">※ 'password'
-                        部分で zabbix ユーザーのパスワードを設定している</p>
+                        部分で zabbix ユーザーのパスワードを設定している。</p>
                     <div class="file-content"
                         style="display: block; white-space: pre; overflow-x: auto; padding: 14px;">create database zabbix character set utf8mb4 collate utf8mb4_bin;
 create user zabbix@localhost identified by '<span class="highlight">password</span>';
@@ -139,7 +147,7 @@ quit;</div>
                     <div class="step-number">1-4</div>
                     <div class="step-title">初期データのインポート</div>
                 </div>
-                <p class="step-desc">Zabbixが提供する初期スキーマとデータを、先ほど作成したデータベースに流し込む</p>
+                <p class="step-desc">Zabbixが提供する初期スキーマとデータを、先ほど作成したデータベースに流し込む。</p>
 
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
@@ -148,12 +156,12 @@ quit;</div>
                         <span class="cmd-text">zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql
                             --default-character-set=utf8mb4 -uzabbix -p zabbix</span>
                         <div class="tip-indicator">TIP
-                            <div class="tip-content">パスワードを求められるため、[1-3]で設定した zabbix ユーザーのパスワードを入力。数分程かかる場合がある</div>
+                            <div class="tip-content">パスワードを求められるため、[1-3]で設定した zabbix ユーザーのパスワードを入力。数分程かかる場合がある。</div>
                         </div>
                     </div>
                 </div>
 
-                <p class="step-desc" style="margin-top: 16px;">インポートが終わったら、一時設定を元に戻す</p>
+                <p class="step-desc" style="margin-top: 16px;">インポートが終わったら、一時設定を元に戻す。</p>
 
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
@@ -215,7 +223,7 @@ quit;</div>
                     <div class="step-number">1-6</div>
                     <div class="step-title">Zabbixサーバーの設定編集</div>
                 </div>
-                <p class="step-desc">Zabbixサーバーの構成ファイルを編集し、データベースのパスワードを指定</p>
+                <p class="step-desc">Zabbixサーバーの構成ファイルを編集し、データベースのパスワードを指定する。</p>
 
                 <div class="file-edit">
                     <div class="file-name">① 構成ファイルの編集</div>
@@ -282,9 +290,7 @@ quit;</div>
                     <div class="step-number">1-8</div>
                     <div class="step-title">WebUIでの初期セットアップ</div>
                 </div>
-                <p class="step-desc">ホストOSのブラウザから、以下のURLにアクセスする</p>
-                <p class="step-desc" style="font-weight: bold; color: #3b82f6; padding-left: 0;">
-                    http://192.168.56.201/zabbix</p>
+                <p class="step-desc">ホストOSのブラウザから、<a href="http://192.168.56.201/zabbix" target="_blank">http://192.168.56.201/zabbix</a> にアクセスする。</p>
 
                 <div class="file-edit" style="margin-top: 16px;">
                     <div class="file-name">💡 セットアップウィザードの手順</div>
@@ -315,7 +321,7 @@ quit;</div>
                     <div class="step-number">1-9</div>
                     <div class="step-title">グラフの日本語化</div>
                 </div>
-                <p class="step-desc">Zabbix のグラフで使用するフォントをインストールする</p>
+                <p class="step-desc">Zabbix のグラフで使用するフォントをインストール</p>
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
                     <div class="cmd-line">
@@ -344,9 +350,9 @@ quit;</div>
             <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 40px 0;">
 
             <section id="step-10" style="text-align: center; padding: 20px 0;">
-                <h2>2 監視対象 (Ubuntu Desktop 24 / test2) の設定</h2>
-                <a href="../Ubuntu_Zabbix_Client/index.html">
-                    Client設定手順へ進む（まだ作ってない） ➔
+                <h2>2 監視対象 (test2 / Ubuntu Desktop) の設定</h2>
+                <a href="../Ubuntu_Zabbix_Agent/">
+                    Client設定手順へ進む ➔
                 </a>
             </section>
         </main>

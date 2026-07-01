@@ -1,3 +1,4 @@
+
 /* スムーズスクロールを有効化 */
 html {
     scroll-behavior: smooth;
@@ -155,7 +156,7 @@ section {
     font-size: 13px;
     color: #343434;
     margin: 16px 0 8px 0;
-    padding-left: 40px;
+    padding-left: 10px;
     transition: color 0.3s ease;
 }
 
@@ -548,4 +549,133 @@ body.dark-mode .tip-content::before {
         height: 44px;
         font-size: 20px;
     }
+}
+
+/* ==========================================================================
+   【追加マージ分】新規追加コンポーネント（テーブル・メイン見出し・区切り線など）
+   ========================================================================== */
+
+/* メインセクション用の大見出しブロック */
+.main-title-block {
+    margin-top: 10px;
+    margin-bottom: 24px;
+}
+
+.main-title-block h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 12px 0;
+    letter-spacing: -0.3px;
+    transition: color 0.3s ease;
+}
+
+/* セクション間などの区切り線 */
+hr {
+    border: 0;
+    border-top: 1px solid #e2e8f0;
+    margin: 40px 0;
+    transition: border-color 0.3s ease;
+}
+
+/* 共通テーブルスタイル（設定値一覧用） */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    margin-bottom: 24px;
+    font-size: 14px;
+    border: 1px solid #cbd5e1;
+    background-color: #ffffff;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+th, td {
+    padding: 12px 14px;
+    border: 1px solid #cbd5e1;
+    text-align: left;
+    vertical-align: top;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+th {
+    background-color: #f1f5f9;
+    font-weight: bold;
+    color: #0f172a;
+}
+
+td {
+    color: #334155;
+}
+
+/* file-editコンポーネント内リストのパディング・行間調整 */
+.file-edit .file-content ol,
+.file-edit .file-content ul {
+    margin: 0;
+    padding-left: 20px;
+    line-height: 1.8;
+}
+
+/* 注意書きテキストの共通スタイル */
+.attention-text {
+    color: #f43f5e;
+    font-size: 0.9em;
+}
+
+/* 本文内のリンクスタイル */
+main a {
+    color: #3b82f6;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+main a:hover {
+    color: #1d4ed8;
+}
+
+/* ─── 追加分に対するダークモード対応 ─── */
+body.dark-mode .main-title-block h2 {
+    color: #f8fafc;
+}
+
+body.dark-mode hr {
+    border-top-color: #242424;
+}
+
+body.dark-mode table {
+    border-color: #334155 !important;
+    background-color: #141414;
+}
+
+body.dark-mode th, 
+body.dark-mode td {
+    border-color: #334155 !important;
+}
+
+body.dark-mode th {
+    background-color: #1e293b;
+    color: #f8fafc;
+}
+
+body.dark-mode td {
+    color: #cbd5e1;
+}
+
+/* テーブル内のインラインカラー指定（赤・ピンク系）をダークモードでも見やすく上書き */
+body.dark-mode table span[style*="color"] {
+    color: #fb7185 !important;
+}
+
+/* ダークモード時の注意書きテキスト（視認性向上） */
+body.dark-mode .attention-text {
+    color: #fb7185 !important;
+}
+
+/* ダークモード時の本文内リンク（視認性向上） */
+body.dark-mode main a {
+    color: #60a5fa;
+}
+
+body.dark-mode main a:hover {
+    color: #93c5fd;
 }
