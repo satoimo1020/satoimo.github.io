@@ -126,12 +126,11 @@
                     <p class="step-desc" style="padding-left: 0; margin-bottom: 8px;">※ 'password'
                         部分で zabbix ユーザーのパスワードを設定している</p>
                     <div class="file-content"
-                        style="display: block; white-space: pre; overflow-x: auto; padding: 14px;">create database
-                        zabbix character set utf8mb4 collate utf8mb4_bin;
-                        create user zabbix@localhost identified by '<span class="highlight">password</span>';
-                        grant all privileges on zabbix.* to zabbix@localhost;
-                        set global log_bin_trust_function_creators = 1;
-                        quit;</div>
+                        style="display: block; white-space: pre; overflow-x: auto; padding: 14px;">create database zabbix character set utf8mb4 collate utf8mb4_bin;
+create user zabbix@localhost identified by '<span class="highlight">password</span>';
+grant all privileges on zabbix.* to zabbix@localhost;
+set global log_bin_trust_function_creators = 1;
+quit;</div>
                 </div>
             </section>
 
@@ -166,9 +165,8 @@
                 <div class="file-edit">
                     <div class="file-name">MariaDB プロンプト内でのSQL実行</div>
                     <div class="file-content"
-                        style="display: block; white-space: pre; overflow-x: auto; padding: 14px;">set global
-                        log_bin_trust_function_creators = 0;
-                        quit;</div>
+                        style="display: block; white-space: pre; overflow-x: auto; padding: 14px;">set global log_bin_trust_function_creators = 0;
+quit;</div>
                 </div>
             </section>
 
@@ -246,13 +244,13 @@
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
                     <div class="cmd-line">
-                        <span class="cmd-text">sudo systemctl restart zabbix-server zabbix-agent2 apache2 mysql</span>
+                        <span class="cmd-text">sudo systemctl restart zabbix-server zabbix-agent apache2 mysql</span>
                     </div>
                     <div class="cmd-line">
-                        <span class="cmd-text">sudo systemctl enable zabbix-server zabbix-agent2 apache2 mysql</span>
+                        <span class="cmd-text">sudo systemctl enable zabbix-server zabbix-agent apache2 mysql</span>
                     </div>
                     <div class="cmd-line">
-                        <span class="cmd-text">sudo systemctl is-active zabbix-server zabbix-agent2 apache2 mysql</span>
+                        <span class="cmd-text">sudo systemctl is-active zabbix-server zabbix-agent apache2 mysql</span>
                         <div class="tip-indicator">TIP
                             <div class="tip-content">起動しているかを確認（activeになっていればOK）</div>
                         </div>
@@ -294,7 +292,7 @@
                         <ol style="margin: 0; padding-left: 20px; line-height: 1.8;">
                             <li><strong>ようこそ:</strong> 言語を選択（日本語が選べるようになっているか確認）して「次のステップ」</li>
                             <li><strong>前提条件のチェック:</strong> 全て「OK」であることを確認して「次のステップ」</li>
-                            <li><strong>データベース接続設定:</strong> Password 欄に [1-3] で決めたパスワードを入力して「次のステップ」
+                            <li><strong>データベース接続設定:</strong> Password 欄に [1-3] で決めたパスワードを入力して「次のステップ」（※他の設定は触らない）
                             </li>
                             <li><strong>設定:</strong> サーバー名（今回は"test1"）を入力して「次のステップ」</li>
                             <li><strong>インストール:</strong> 設定内容を確認して「終了」</li>
@@ -348,7 +346,7 @@
             <section id="step-10" style="text-align: center; padding: 20px 0;">
                 <h2>2 監視対象 (Ubuntu Desktop 24 / test2) の設定</h2>
                 <a href="../Ubuntu_Zabbix_Client/index.html">
-                    Client設定手順へ進む ➔
+                    Client設定手順へ進む（まだ作ってない） ➔
                 </a>
             </section>
         </main>
