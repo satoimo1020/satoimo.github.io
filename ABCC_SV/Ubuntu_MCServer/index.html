@@ -215,20 +215,20 @@
                     </div>
                     <div class="file-content"
                         style="display: block; white-space: pre; overflow-x: auto; padding: 14px;">[Unit]
-                        Description=Minecraft server
-                        After=network-online.target
+Description=Minecraft server
+After=network-online.target
 
-                        [Service]
-                        Type=forking
-                        User=ubuntu
-                        Group=ubuntu
-                        WorkingDirectory=/home/ubuntu/mc
-                        ExecStart=screen -S minecraft -d -m java -Xms3G -Xmx3G -jar /home/ubuntu/mc/server.jar nogui
-                        ExecStop=screen -S minecraft -X quit
-                        Restart=on-failure
+[Service]
+Type=forking
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/mc
+ExecStart=screen -S minecraft -d -m java -Xms3G -Xmx3G -jar /home/ubuntu/mc/server.jar nogui
+ExecStop=screen -S minecraft -X quit
+Restart=on-failure
 
-                        [Install]
-                        WantedBy = multi-user.target</div>
+[Install]
+WantedBy = multi-user.target</div>
                 </div>
 
                 <div class="terminal" style="margin-top: 16px;">
