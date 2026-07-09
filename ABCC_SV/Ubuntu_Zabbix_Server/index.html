@@ -11,7 +11,7 @@
 <body>
 
     <div class="container">
-        <header>
+        <div class="page-title-area">
             <div class="badge-container">
                 <span class="badge badge-primary">Ubuntu 24.04LTS</span>
                 <span class="badge badge-secondary">Zabbix 7.0 LTS</span>
@@ -20,7 +20,7 @@
             <p class="description">
                 サーバー応用演習 ch4_Zabbix編（2026年7月1日 ～）
             </p>
-        </header>
+        </div>
 
         <nav class="sidebar">
             <h2>目次</h2>
@@ -242,7 +242,8 @@
                 <div class="file-edit">
                     <div class="file-name">ロケール設定ファイルの編集</div>
                     <div class="terminal">
-                        <div class="cmd-line" data-prompt="$"><span class="cmd-text">sudo nano /etc/locale.gen</span></div>
+                        <div class="cmd-line" data-prompt="$"><span class="cmd-text">sudo nano /etc/locale.gen</span>
+                        </div>
                     </div>
                     <p class="step-desc">ファイル内で以下の行を探して、コメントアウト（#）を解除</p>
                     <div class="file-content">
@@ -262,7 +263,8 @@
                 <div class="file-edit">
                     <div class="file-name">構成ファイルの編集</div>
                     <div class="terminal">
-                        <div class="cmd-line" data-prompt="$"><span class="cmd-text">sudo nano /etc/zabbix/zabbix_server.conf</span>
+                        <div class="cmd-line" data-prompt="$"><span class="cmd-text">sudo nano
+                                /etc/zabbix/zabbix_server.conf</span>
                         </div>
                     </div>
                     <p class="step-desc">ファイル内で `DBPassword=`
@@ -560,15 +562,11 @@
                 </table>
             </section>
         </main>
-
-        <footer>
-            Zabbix Server & Agent Setup Guide
-        </footer>
     </div>
 
-    <button id="darkmode-toggle" class="darkmode-toggle" aria-label="ダークモード切り替え">🌓</button>
-
-    <script src="../script.js"></script>
+    <script src="../header_footer_script.js"></script>
+    <script src="../tip_script.js"></script>
+    <script src="../scrollspy_script.js"></script>
 </body>
 
 </html>

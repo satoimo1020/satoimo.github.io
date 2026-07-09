@@ -43,13 +43,20 @@
     --text-indicator: #451a03;
 
     /* フォントサイズの一元管理 */
-    --font-size-xs: 13px;       /* バッジ、フッター、極小注記、ターミナルヘッダー */
-    --font-size-sm: 14px;       /* サイドバー小項目、補足テキスト、ファイル名、Tipコンテンツ */
-    --font-size-body-sub: 15px; /* ステップ説明、コード内テキスト */
-    --font-size-body: 16px;     /* 全体本文、標準テキスト、テーブル */
-    --font-size-title-sm: 20px; /* セクション見出し、ステップタイトル */
-    --font-size-title-md: 24px; /* サイドバー大見出し、通常時トグルボタン */
-    --font-size-title-lg: 32px; /* ページメインタイトル、大見出し */
+    --font-size-xs: 13px;
+    /* バッジ、フッター、極小注記、ターミナルヘッダー */
+    --font-size-sm: 14px;
+    /* サイドバー小項目、補足テキスト、ファイル名、Tipコンテンツ */
+    --font-size-body-sub: 15px;
+    /* ステップ説明、コード内テキスト */
+    --font-size-body: 16px;
+    /* 全体本文、標準テキスト、テーブル */
+    --font-size-title-sm: 20px;
+    /* セクション見出し、ステップタイトル */
+    --font-size-title-md: 24px;
+    /* サイドバー大見出し、通常時トグルボタン */
+    --font-size-title-lg: 32px;
+    /* ページメインタイトル、大見出し */
 
     /* 共通アニメーション・レイアウト */
     --transition-fast: 0.2s ease;
@@ -136,6 +143,7 @@ hr {
    ========================================================================== */
 
 .sidebar {
+    margin-top: 140px;
     background-color: var(--bg-surface);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-lg);
@@ -199,10 +207,12 @@ body.dark-mode .sidebar .toc-list::before {
 .sidebar .depth-1 {
     margin-top: 12px;
 }
+
 .sidebar .depth-1:first-child {
     margin-top: 0;
 }
-.sidebar .depth-1 > a {
+
+.sidebar .depth-1>a {
     padding-left: 26px;
     font-size: var(--font-size-body);
     font-weight: bold;
@@ -213,7 +223,8 @@ body.dark-mode .sidebar .toc-list::before {
 .sidebar .depth-2 {
     margin-top: 8px;
 }
-.sidebar .depth-2 > a {
+
+.sidebar .depth-2>a {
     padding-left: 26px;
     font-size: var(--font-size-sm);
     color: var(--text-main);
@@ -229,17 +240,17 @@ body.dark-mode .sidebar .toc-list::before {
 }
 
 /* 大項目のドット */
-.sidebar .depth-1 > a::before {
+.sidebar .depth-1>a::before {
     top: 8px;
     width: 8px;
     height: 8px;
     left: 4px;
-    background-color: var(--color-active-bg); 
+    background-color: var(--color-active-bg);
     border: 1px solid var(--color-active-border);
 }
 
 /* 小項目のドット */
-.sidebar .depth-2 > a::before {
+.sidebar .depth-2>a::before {
     top: 9px;
     width: 6px;
     height: 6px;
@@ -254,13 +265,13 @@ body.dark-mode .sidebar .toc-list::before {
 }
 
 /* アクティブ時のドット変化 */
-.sidebar .depth-1 > a.active::before {
+.sidebar .depth-1>a.active::before {
     background-color: var(--color-active);
     border-color: var(--color-active);
     box-shadow: 0 0 0 3px var(--color-active-shadow);
 }
 
-.sidebar .depth-2 > a.active::before {
+.sidebar .depth-2>a.active::before {
     background-color: var(--color-active);
     box-shadow: 0 0 0 3px var(--color-active-shadow);
 }
@@ -273,6 +284,22 @@ body.dark-mode .sidebar .toc-list::before {
 /* ==========================================================================
    コンポーネント
    ========================================================================== */
+
+/* ヘッダー下に配置するタイトルエリア */
+.page-title-area {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px 32px;
+    margin-bottom: 40px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    transition: background-color var(--transition-normal), border-color var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+/* タイトルエリアのダークモード時の影 */
+body.dark-mode .page-title-area {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
 
 /* バッジ */
 .badge-container {
@@ -422,9 +449,12 @@ body.dark-mode section {
 .cmd-line::before {
     content: attr(data-prompt);
     color: var(--text-muted-dark);
-    margin-right: 12px; /* プロンプトとコマンドの間の余白 */
-    flex-shrink: 0;     /* プロンプトが潰れないように固定 */
-    user-select: none;  /* コピペ時にプロンプトを除外 */
+    margin-right: 12px;
+    /* プロンプトとコマンドの間の余白 */
+    flex-shrink: 0;
+    /* プロンプトが潰れないように固定 */
+    user-select: none;
+    /* コピペ時にプロンプトを除外 */
 }
 
 .cmd-text {
@@ -689,29 +719,39 @@ footer {
 /* PC・大画面向け */
 @media (min-width: 1200px) {
     body {
-        padding-left: 340px;
+        padding: 40px 20px;
     }
 
     .container {
+        max-width: 1200px;
         margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 400px; /* 左にメイン(伸縮)、右に目次 */
+        gap: 40px; /* メインと目次の間の隙間 */
+        align-items: start;
+    }
+
+    .page-title-area {
+        grid-column: 1 / -1;
+        grid-row: 1;
+    }
+
+    main {
+        grid-column: 1; /* 左側の第1カラムに配置 */
+        grid-row: 2;
+        max-width: 800px;
+        width: 100%;
     }
 
     .sidebar {
-        position: fixed;
+        grid-column: 2; /* 右側の第2カラムに配置 */
+        grid-row: 2;
+        position: sticky;
         top: 40px;
-        left: 40px;
-        width: 25%;
+        width: 100%;
         max-height: calc(100vh - 80px);
         overflow-y: auto;
-    }
-}
-
-/* タブレット・中画面向け */
-@media (max-width: 1199px) {
-    .sidebar {
-        position: static;
-        width: 100%;
-        margin-bottom: 30px;
+        margin-top: 0;
     }
 }
 
@@ -719,6 +759,14 @@ footer {
 @media (max-width: 640px) {
     body {
         padding: 20px 0;
+    }
+
+    .page-title-area {
+        border-left: none;
+        border-right: none;
+        border-radius: 0;
+        padding: 24px 16px;
+        margin-bottom: 0;
     }
 
     .sidebar,
