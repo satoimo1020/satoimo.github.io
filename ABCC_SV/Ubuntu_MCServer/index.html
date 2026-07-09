@@ -24,14 +24,18 @@
 
         <nav class="sidebar">
             <h2>目次</h2>
-            <ul>
-                <li><a href="#step-1">1. パッケージ更新</a></li>
-                <li><a href="#step-2">2. Java環境・ディレクトリ準備</a></li>
-                <li><a href="#step-3">3. 初回起動と各種設定</a></li>
-                <li><a href="#step-4">4. 本起動と停止コマンド</a></li>
-                <li><a href="#step-5">5. サーバーのサービス化</a></li>
-                <li><a href="#step-6">6. サーバーの自動実行</a></li>
-                <li><a href="#step-7">7. screenによるセッション管理</a></li>
+            <ul class="toc-list">
+                <li class="toc-item depth-1">
+                    <ul class="toc-sub-list">
+                        <li class="toc-item depth-2"><a href="#step-1">1. パッケージ更新</a></li>
+                        <li class="toc-item depth-2"><a href="#step-2">2. Java環境・ディレクトリ準備</a></li>
+                        <li class="toc-item depth-2"><a href="#step-3">3. 初回起動と各種設定</a></li>
+                        <li class="toc-item depth-2"><a href="#step-4">4. 本起動と停止コマンド</a></li>
+                        <li class="toc-item depth-2"><a href="#step-5">5. サーバーのサービス化</a></li>
+                        <li class="toc-item depth-2"><a href="#step-6">6. サーバーの自動実行</a></li>
+                        <li class="toc-item depth-2"><a href="#step-7">7. screenによるセッション管理</a></li>
+                    </ul>
+                </li>
             </ul>
         </nav>
 
@@ -46,14 +50,14 @@
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
 
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">sudo apt update</span>
                         <div class="tip-indicator">TIP
                             <div class="tip-content">インストール可能なパッケージの最新リストを取得し、ローカルのデータベースを更新</div>
                         </div>
                     </div>
 
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">sudo apt upgrade -y</span>
                         <div class="tip-indicator">TIP
                             <div class="tip-content">パッケージを最新バージョンに更新。-yオプションにより確認プロンプトを自動で承認</div>
@@ -72,36 +76,36 @@
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
 
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">sudo apt install -y openjdk-17-jdk</span>
                         <div class="tip-indicator">TIP
                             <div class="tip-content">Minecraft 1.20.4はJava 17環境が推奨のため、OpenJDK 17をインストール</div>
                         </div>
                     </div>
 
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">java -version</span>
                         <div class="tip-indicator">TIP
                             <div class="tip-content">正常にインストールできているかの確認<br>結果：openjdk version "17.X.XX" 2026-XX-XX</div>
                         </div>
                     </div>
 
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">cd /home/ubuntu</span>
                     </div>
 
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">mkdir mc</span>
                         <div class="tip-indicator">TIP
                             <div class="tip-content">/home/ubuntu/ にMinecraftサーバー用のディレクトリを作成</div>
                         </div>
                     </div>
 
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">cd mc</span>
                     </div>
 
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">wget
                             https://piston-data.mojang.com/v1/objects/8dd1a28015f51b1803213892b50b7b4fc76e594d/server.jar</span>
                         <div class="tip-indicator">TIP
@@ -109,7 +113,7 @@
                         </div>
                     </div>
 
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">ls -lh server.jar</span>
                         <div class="tip-indicator">TIP
                             <div class="tip-content">権限の確認<br>結果：-rw-rw-r-- 1 ubuntu ubuntu 47M Dec 7 2023 server.jar
@@ -133,7 +137,7 @@
 
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">java -Xmx3G -Xms3G -jar server.jar nogui</span>
                         <div class="tip-indicator">TIP
                             <div class="tip-content">Xmx3G: 最大メモリ3GB / Xms3G: 最小メモリ3GB / nogui:
@@ -144,26 +148,21 @@
 
                 <div class="file-edit">
                     <div class="file-name">① 利用規約への同意設定 (eula.txt)</div>
-                    <div class="terminal" style="margin-bottom: 8px;">
-                        <div class="cmd-line"><span class="cmd-text">nano eula.txt</span></div>
-                    </div>
                     <div class="file-content">
+                        <div class="file-header">/home/ubuntu/mc/eula.txt</div>
                         eula=<span class="highlight">true</span>
-                        <div class="tip-indicator" style="margin-left: 20px;">TIP
-                            <div class="tip-content">falseからtrueに変更することで規約に同意し、サーバーの起動が可能になる
-                            </div>
+                        <div class="tip-indicator">TIP
+                            <div class="tip-content">falseからtrueに変更することで規約に同意し、サーバーの起動が可能になる</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="file-edit">
                     <div class="file-name">② サーバープロパティの編集 (server.properties)</div>
-                    <div class="terminal" style="margin-bottom: 8px;">
-                        <div class="cmd-line"><span class="cmd-text">nano server.properties</span></div>
-                    </div>
                     <div class="file-content">
+                        <div class="file-header">/home/ubuntu/mc/server.properties</div>
                         online-mode=<span class="highlight">false</span>
-                        <div class="tip-indicator" style="margin-left: 20px;">TIP
+                        <div class="tip-indicator">TIP
                             <div class="tip-content">今回は非正規クライアント（TLauncher）を利用するため、Microsoftアカウントによる認証を無効化</div>
                         </div>
                     </div>
@@ -184,12 +183,14 @@
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
 
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">java -Xmx3G -Xms3G -jar server.jar nogui</span>
                     </div>
 
                     <div class="cmd-line"
                         style="border-top: 1px solid #1e293b; padding-top: 12px; margin-top: 12px; transform: none; list-style: none;">
+                    </div>
+                    <div class="cmd-line" data-prompt=">">
                         <span class="cmd-text" style="color: #f43f5e;">stop</span>
                         <div class="tip-indicator">TIP
                             <div class="tip-content">Minecraftサーバー内の終了コマンド。ワールドデータを保存して安全に停止できる</div>
@@ -208,32 +209,30 @@
                 <p class="step-desc">systemdに登録し、バックグラウンドでの常時起動や自動管理を行えるようにする</p>
 
                 <div class="file-edit">
-                    <div class="file-name">① サービス定義ファイルの新規作成</div>
-                    <div class="terminal" style="margin-bottom: 8px;">
-                        <div class="cmd-line"><span class="cmd-text">sudo nano
-                                /etc/systemd/system/minecraft.service</span></div>
+                <div class="file-name">① サービス定義ファイルの新規作成</div>
+                    <div class="file-content">
+                        <div class="file-header">/etc/systemd/system/minecraft.service</div>
+                        [Unit]<br>
+                        Description=Minecraft server<br>
+                        After=network-online.target<br>
+                        <br>
+                        [Service]<br>
+                        Type=forking<br>
+                        User=ubuntu<br>
+                        Group=ubuntu<br>
+                        WorkingDirectory=/home/ubuntu/mc<br>
+                        ExecStart=screen -S minecraft -d -m java -Xms3G -Xmx3G -jar /home/ubuntu/mc/server.jar nogui<br>
+                        ExecStop=screen -S minecraft -X quit<br>
+                        Restart=on-failure<br>
+                        <br>
+                        [Install]<br>
+                        WantedBy = multi-user.target
                     </div>
-                    <div class="file-content"
-                        style="display: block; white-space: pre; overflow-x: auto; padding: 14px;">[Unit]
-Description=Minecraft server
-After=network-online.target
-
-[Service]
-Type=forking
-User=ubuntu
-Group=ubuntu
-WorkingDirectory=/home/ubuntu/mc
-ExecStart=screen -S minecraft -d -m java -Xms3G -Xmx3G -jar /home/ubuntu/mc/server.jar nogui
-ExecStop=screen -S minecraft -X quit
-Restart=on-failure
-
-[Install]
-WantedBy = multi-user.target</div>
                 </div>
 
-                <div class="terminal" style="margin-top: 16px;">
+                <div class="terminal">
                     <div class="terminal-header">Terminal</div>
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">sudo systemctl daemon-reload</span>
                         <div class="tip-indicator">TIP
                             <div class="tip-content">systemdのユニットファイルを再読込し、作成した.serviceファイルをシステムに認識させる</div>
@@ -251,13 +250,13 @@ WantedBy = multi-user.target</div>
 
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">sudo systemctl enable minecraft</span>
                         <div class="tip-indicator">TIP
                             <div class="tip-content">サービスを有効化し、システム起動時に自動実行されるように登録する</div>
                         </div>
                     </div>
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">sudo systemctl is-enabled minecraft</span>
                         <div class="tip-indicator">TIP
                             <div class="tip-content">自動起動設定が正しく有効になっているかを確認（enabledと返ってくればOK）</div>
@@ -275,13 +274,13 @@ WantedBy = multi-user.target</div>
 
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">screen -ls</span>
                         <div class="tip-indicator">TIP
                             <div class="tip-content">現在バックグラウンドで起動しているscreenセッションの一覧を表示</div>
                         </div>
                     </div>
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">screen -r minecraft</span>
                         <div class="tip-indicator">TIP
                             <div class="tip-content">「minecraft」セッションにアタッチし、サーバーの生ログ確認やコマンド入力画面に入る</div>
@@ -289,12 +288,12 @@ WantedBy = multi-user.target</div>
                     </div>
                 </div>
 
-                <div class="file-edit" style="margin-top: 16px;">
+                <div class="file-edit">
                     <div class="file-name">💡 デタッチ（作業画面から安全に抜ける）</div>
                     <div class="file-content" style="padding: 12px; font-weight: bold;">
                         Ctrl + A キーを押した後に D キーを押す
                     </div>
-                    <p class="step-desc" style="padding-left: 0; margin-top: 8px;">
+                    <p class="step-desc">
                         ※この操作を行うことで、サーバーを起動したまま元のLinuxプロンプトに戻ることができる</p>
                 </div>
             </section>

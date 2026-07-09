@@ -61,7 +61,7 @@
 
             <div class="main-title-block" id="heading-1">
                 <h2>1 test1 (Zabbixサーバー) の構築</h2>
-                <p class="step-desc" style="padding-left: 0; margin-bottom: 24px;">
+                <p class="step-desc">
                     test1（Zabbixサーバー）に、Zabbixサーバー、Webフロントエンド、データベース（MariaDB）を構築する。
                 </p>
             </div>
@@ -144,8 +144,7 @@
 
                 <div class="file-edit">
                     <div class="file-name">MariaDB プロンプト内でのSQL実行</div>
-                    <p class="step-desc" style="padding-left: 0; margin-bottom: 8px;">※ 'password' 部分で zabbix
-                        ユーザーのパスワードを設定している。</p>
+                    <p class="step-desc">※ 'password' 部分で zabbix ユーザーのパスワードを設定している。</p>
                     <div class="terminal">
                         <div class="terminal-header">SQL</div>
 
@@ -187,7 +186,7 @@
                     </div>
                 </div>
 
-                <p class="step-desc" style="margin-top: 16px;">インポートが終わったら、一時設定を元に戻す。</p>
+                <p class="step-desc">インポートが終わったら、一時設定を元に戻す。</p>
 
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
@@ -225,7 +224,7 @@
                     </div>
                 </div>
 
-                <p class="step-desc" style="margin-top: 16px;">日本語を使用するように設定</p>
+                <p class="step-desc">日本語を使用するように設定</p>
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
                     <div class="cmd-line" data-prompt="$">
@@ -239,13 +238,13 @@
                     </div>
                 </div>
 
-                <p class="step-desc" style="margin-top: 16px;">日本語ロケールを有効化</p>
+                <p class="step-desc">日本語ロケールを有効化</p>
                 <div class="file-edit">
                     <div class="file-name">ロケール設定ファイルの編集</div>
-                    <div class="terminal" style="margin-bottom: 8px;">
+                    <div class="terminal">
                         <div class="cmd-line" data-prompt="$"><span class="cmd-text">sudo nano /etc/locale.gen</span></div>
                     </div>
-                    <p class="step-desc" style="padding-left: 0; margin-bottom: 8px;">ファイル内で以下の行を探して、コメントアウト（#）を解除</p>
+                    <p class="step-desc">ファイル内で以下の行を探して、コメントアウト（#）を解除</p>
                     <div class="file-content">
                         <div class="file-header">/etc/locale.gen</div>
                         <span class="highlight">ja_JP.UTF-8 UTF-8</span>
@@ -262,7 +261,7 @@
 
                 <div class="file-edit">
                     <div class="file-name">構成ファイルの編集</div>
-                    <div class="terminal" style="margin-bottom: 8px;">
+                    <div class="terminal">
                         <div class="cmd-line" data-prompt="$"><span class="cmd-text">sudo nano /etc/zabbix/zabbix_server.conf</span>
                         </div>
                     </div>
@@ -271,7 +270,7 @@
                     <div class="file-content">
                         <div class="file-header">/etc/zabbix/zabbix_server.conf</div>
                         DBPassword=<span class="highlight">password</span>
-                        <div class="tip-indicator" style="margin-left: 20px;">TIP
+                        <div class="tip-indicator">TIP
                             <div class="tip-content">[1-3]で設定した zabbix ユーザーのパスワードを記述</div>
                         </div>
                     </div>
@@ -309,7 +308,7 @@
                 <p class="step-desc">ポートを 8080 から 80 に変更</p>
                 <div class="file-content">
                     Listen 8080 → Listen 80
-                    <div class="tip-indicator" style="margin-left: 20px;">TIP
+                    <div class="tip-indicator">TIP
                         <div class="tip-content">こっちのほうが都合がいい</div>
                     </div>
                 </div>
@@ -329,10 +328,10 @@
                 <p class="step-desc">ホストOSのブラウザから、<a href="http://192.168.56.201/zabbix"
                         target="_blank">http://192.168.56.201/zabbix</a> にアクセスする。</p>
 
-                <div class="file-edit" style="margin-top: 16px;">
+                <div class="file-edit">
                     <div class="file-name">💡 セットアップウィザードの手順</div>
-                    <div class="file-content" style="padding: 16px;">
-                        <ol style="margin: 0; padding-left: 20px; line-height: 1.8;">
+                    <div class="file-content">
+                        <ol>
                             <li><strong>ようこそ:</strong> 言語を選択（日本語が選べるようになっているか確認）して「次のステップ」</li>
                             <li><strong>前提条件のチェック:</strong> 全て「OK」であることを確認して「次のステップ」</li>
                             <li><strong>データベース接続設定:</strong> Password 欄に [1-3] で決めたパスワードを入力して「次のステップ」（※他の設定は触らない）</li>
@@ -342,9 +341,9 @@
                     </div>
                 </div>
 
-                <div class="note-box" style="margin-top: 16px;">
+                <div class="note-box">
                     <div class="note-box-title">🔐 初期ログイン情報</div>
-                    <ul style="margin: 0; padding-left: 20px;">
+                    <ul>
                         <li><strong>ユーザー名:</strong> Admin <span style="color: #f43f5e;">(※イニシャルが大文字になっているので注意)</span>
                         </li>
                         <li><strong>パスワード:</strong> zabbix</li>
@@ -365,7 +364,7 @@
                     </div>
                 </div>
 
-                <p class="step-desc" style="margin-top: 16px;">インストールしたフォントを有効化</p>
+                <p class="step-desc">インストールしたフォントを有効化</p>
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
                     <div class="cmd-line" data-prompt="$">
@@ -375,7 +374,7 @@
                     </div>
                 </div>
 
-                <p class="step-desc" style="margin-top: 16px;">フォントを適用するため、各種サービスを再起動</p>
+                <p class="step-desc">フォントを適用するため、各種サービスを再起動</p>
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
                     <div class="cmd-line" data-prompt="$">
