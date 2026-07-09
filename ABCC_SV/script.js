@@ -1,5 +1,5 @@
 // ==========================================================================
-/* 【新規実装】純粋なJavaScriptによるダークモード制御（依存性なし） */
+// ダークモード制御
 // ==========================================================================
 const toggleBtn = document.getElementById('darkmode-toggle');
 
@@ -24,7 +24,7 @@ toggleBtn.addEventListener('click', () => {
 });
 
 // ==========================================================================
-// TIPの展開方向と位置を自動で計算して設定するスクリプト（既存ロジック維持）
+// TIPの展開方向と位置を自動計算
 // ==========================================================================
 document.querySelectorAll('.tip-indicator').forEach(indicator => {
     const content = indicator.querySelector('.tip-content');
@@ -59,4 +59,45 @@ document.querySelectorAll('.tip-indicator').forEach(indicator => {
         content.style.top = `${top}px`;
         content.style.left = `${left}px`;
     });
+});
+
+// ==========================================================================
+// スクロールスパイ（閲覧中のセクションを目次でハイライト）
+// ==========================================================================
+window.addEventListener('DOMContentLoaded', () => {
+    const tocLinks = document.querySelectorAll('.sidebar a');
+    
+    // 目次のリンク先となる要素（idを持つ各セクション）を配列で取得
+    const sections = Array.from(tocLinks)
+        .map(link => document.querySelector(link.getAttribute('href')))
+        .filter(Boolean);
+
+    function spyScroll() {
+        // 現在のスクロール位置を取得（上部に140pxの判定バッファを設定）
+        const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+        const triggerOffset = 140; 
+
+        let currentSectionId = '';
+
+        // 現在どのセクションが画面上部を通過しているか判定
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (scrollPosition + triggerOffset >= sectionTop) {
+                currentSectionId = section.getAttribute('id');
+            }
+        });
+
+        // 判定したセクションに対応する目次だけに active クラスを付与
+        tocLinks.forEach(link => {
+            if (link.getAttribute('href') === `#${currentSectionId}`) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    }
+
+    // スクロール時およびページ読み込み時に実行
+    window.addEventListener('scroll', spyScroll);
+    spyScroll();
 });

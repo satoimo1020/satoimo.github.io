@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ubuntu - Zabbixサーバー構築手順</title>
+    <title>Ubuntu - Zabbix 導入手順（完全版）</title>
     <link rel="stylesheet" href="../style.css">
 </head>
 
@@ -24,24 +24,43 @@
 
         <nav class="sidebar">
             <h2>目次</h2>
-            <ul>
-                <li><a href="#step-1">1-1. Zabbixリポジトリの登録</a></li>
-                <li><a href="#step-2">1-2. 必要なパッケージをインストール</a></li>
-                <li><a href="#step-3">1-3. データベースの初期設定</a></li>
-                <li><a href="#step-4">1-4. 初期データのインポート</a></li>
-                <li><a href="#step-5">1-5. 日本語化</a></li>
-                <li><a href="#step-6">1-6. Zabbixサーバーの設定編集</a></li>
-                <li><a href="#step-7">1-7. サービスの起動と有効化</a></li>
-                <li><a href="#step-8">1-8. WebUIでの初期セットアップ</a></li>
-                <li><a href="#step-9">1-9. グラフの日本語化</a></li>
-                <li><a href="#step-10">2-0 監視対象 (Ubuntu Desktop 24 / test2) の設定</a></li>
+            <ul class="toc-list">
+                <li class="toc-item depth-1">
+                    <a href="#heading-1">1. Zabbixサーバーの構築</a>
+                    <ul class="toc-sub-list">
+                        <li class="toc-item depth-2"><a href="#step-1">1-1. Zabbixリポジトリの登録</a></li>
+                        <li class="toc-item depth-2"><a href="#step-2">1-2. 必要なパッケージをインストール</a></li>
+                        <li class="toc-item depth-2"><a href="#step-3">1-3. データベースの初期設定</a></li>
+                        <li class="toc-item depth-2"><a href="#step-4">1-4. 初期データのインポート</a></li>
+                        <li class="toc-item depth-2"><a href="#step-5">1-5. 日本語化</a></li>
+                        <li class="toc-item depth-2"><a href="#step-6">1-6. Zabbixサーバーの設定編集</a></li>
+                        <li class="toc-item depth-2"><a href="#step-7">1-7. サービスの起動と有効化</a></li>
+                        <li class="toc-item depth-2"><a href="#step-8">1-8. WebUIでの初期セットアップ</a></li>
+                        <li class="toc-item depth-2"><a href="#step-9">1-9. グラフの日本語化</a></li>
+                    </ul>
+                </li>
+                <li class="toc-item depth-1">
+                    <a href="#heading-2">2. 監視対象の設定</a>
+                    <ul class="toc-sub-list">
+                        <li class="toc-item depth-2"><a href="#step-2-1">2-1. Zabbixリポジトリの登録</a></li>
+                        <li class="toc-item depth-2"><a href="#step-2-2">2-2. Zabbix Agent のインストール</a></li>
+                        <li class="toc-item depth-2"><a href="#step-2-3">2-3. エージェント設定ファイルの編集</a></li>
+                        <li class="toc-item depth-2"><a href="#step-2-4">2-4. サービスの起動と有効化</a></li>
+                    </ul>
+                </li>
+                <li class="toc-item depth-1">
+                    <a href="#heading-3">3. Zabbix WebUI での設定</a>
+                    <ul class="toc-sub-list">
+                        <li class="toc-item depth-2"><a href="#step-3-1">3-1. Zabbix Web画面でのホスト登録</a></li>
+                    </ul>
+                </li>
             </ul>
         </nav>
 
         <main>
 
-            <div class="main-title-block">
-                <h2>test1 (Zabbixサーバー) の構築</h2>
+            <div class="main-title-block" id="heading-1">
+                <h2>1 test1 (Zabbixサーバー) の構築</h2>
                 <p class="step-desc" style="padding-left: 0; margin-bottom: 24px;">
                     test1（Zabbixサーバー）に、Zabbixサーバー、Webフロントエンド、データベース（MariaDB）を構築する。
                 </p>
@@ -56,27 +75,23 @@
 
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
-
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">cd /tmp</span>
                     </div>
-
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">wget
                             https://repo.zabbix.com/zabbix/7.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_7.0-1+ubuntu24.04_all.deb</span>
                         <div class="tip-indicator">TIP
                             <div class="tip-content">Ubuntu 24.04用のZabbix 7.0公式リポジトリパッケージをダウンロード</div>
                         </div>
                     </div>
-
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">sudo dpkg -i zabbix-release_7.0-1+ubuntu24.04_all.deb</span>
                         <div class="tip-indicator">TIP
                             <div class="tip-content">ダウンロードしたリポジトリパッケージをシステムにインストール</div>
                         </div>
                     </div>
-
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">sudo apt update</span>
                         <div class="tip-indicator">TIP
                             <div class="tip-content">新しく追加されたZabbixリポジトリのパッケージリストを同期</div>
@@ -95,14 +110,12 @@
                 <div class="note-box">
                     <div class="note-box-title">⚠️ DBに関する注意事項</div>
                     Ubuntu
-                    すでに新しいバージョンのMariaDBが存在する状態で、それよりも古いバージョンのMariaDBを上書きインストールしようとすると、データの互換性がなくなってシステムがフリーズするみたい。
-                    新たにインストールしないように。（今回は既にインストール済みのため除外）
+                    すでに新しいバージョンのMariaDBが存在する状態で、それよりも古いバージョンのMariaDBを上書きインストールしようとすると、データの互換性がなくなってシステムがフリーズするみたい。新たにインストールしないように。（今回は既にインストール済みのため除外）
                 </div>
 
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
-
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">sudo apt install -y zabbix-server-mysql zabbix-frontend-php
                             zabbix-apache-conf zabbix-sql-scripts zabbix-agent</span>
                         <div class="tip-indicator">TIP
@@ -121,7 +134,7 @@
 
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">sudo mariadb</span>
                         <div class="tip-indicator">TIP
                             <div class="tip-content">MariaDBにroot権限で接続（パスワードレス、または設定したrootパスワードを入力）</div>
@@ -131,15 +144,29 @@
 
                 <div class="file-edit">
                     <div class="file-name">MariaDB プロンプト内でのSQL実行</div>
-                    <p class="step-desc" style="padding-left: 0; margin-bottom: 8px;">※ 'password'
-                        部分で zabbix ユーザーのパスワードを設定している。</p>
-                    <div class="file-content"
-                        style="display: block; white-space: pre; overflow-x: auto; padding: 14px;">create database zabbix character set utf8mb4 collate utf8mb4_bin;
-create user zabbix@localhost identified by '<span class="highlight">password</span>';
-grant all privileges on zabbix.* to zabbix@localhost;
-set global log_bin_trust_function_creators = 1;
-quit;</div>
-                </div>
+                    <p class="step-desc" style="padding-left: 0; margin-bottom: 8px;">※ 'password' 部分で zabbix
+                        ユーザーのパスワードを設定している。</p>
+                    <div class="terminal">
+                        <div class="terminal-header">SQL</div>
+
+                        <div class="cmd-line" data-prompt=">">
+                            <span class="cmd-text">create database zabbix character set utf8mb4 collate
+                                utf8mb4_bin;</span>
+                        </div>
+
+                        <div class="cmd-line" data-prompt=">">
+                            <span class="cmd-text">create user zabbix@localhost identified by '<span
+                                    class="highlight">password</span>';</span>
+                        </div>
+
+                        <div class="cmd-line" data-prompt=">">
+                            <span class="cmd-text">grant all privileges on zabbix.* to zabbix@localhost;</span>
+                        </div>
+
+                        <div class="cmd-line" data-prompt=">">
+                            <span class="cmd-text">quit;</span>
+                        </div>
+                    </div>
             </section>
 
             <section id="step-4">
@@ -151,8 +178,7 @@ quit;</div>
 
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
-
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql
                             --default-character-set=utf8mb4 -uzabbix -p zabbix</span>
                         <div class="tip-indicator">TIP
@@ -165,16 +191,24 @@ quit;</div>
 
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">sudo mariadb</span>
                     </div>
                 </div>
 
                 <div class="file-edit">
                     <div class="file-name">MariaDB プロンプト内でのSQL実行</div>
-                    <div class="file-content"
-                        style="display: block; white-space: pre; overflow-x: auto; padding: 14px;">set global log_bin_trust_function_creators = 0;
-quit;</div>
+                    <div class="terminal">
+                        <div class="terminal-header">SQL</div>
+
+                        <div class="cmd-line" data-prompt=">">
+                            <span class="cmd-text">set global log_bin_trust_function_creators = 0;</span>
+                        </div>
+
+                        <div class="cmd-line" data-prompt=">">
+                            <span class="cmd-text">quit;</span>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -186,7 +220,7 @@ quit;</div>
                 <p class="step-desc">日本語パッケージをインストール</p>
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">sudo apt install -y language-pack-ja-base language-pack-ja</span>
                     </div>
                 </div>
@@ -194,25 +228,26 @@ quit;</div>
                 <p class="step-desc" style="margin-top: 16px;">日本語を使用するように設定</p>
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">echo 'export LANG=ja_JP.UTF-8' &gt;&gt; ~/.bashrc</span>
                     </div>
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">echo 'export LANGUAGE="ja_JP:ja"' &gt;&gt; ~/.bashrc</span>
                     </div>
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">source ~/.bashrc</span>
                     </div>
                 </div>
 
                 <p class="step-desc" style="margin-top: 16px;">日本語ロケールを有効化</p>
                 <div class="file-edit">
-                    <div class="file-name">① ロケール設定ファイルの編集</div>
+                    <div class="file-name">ロケール設定ファイルの編集</div>
                     <div class="terminal" style="margin-bottom: 8px;">
-                        <div class="cmd-line"><span class="cmd-text">sudo nano /etc/locale.gen</span></div>
+                        <div class="cmd-line" data-prompt="$"><span class="cmd-text">sudo nano /etc/locale.gen</span></div>
                     </div>
                     <p class="step-desc" style="padding-left: 0; margin-bottom: 8px;">ファイル内で以下の行を探して、コメントアウト（#）を解除</p>
                     <div class="file-content">
+                        <div class="file-header">/etc/locale.gen</div>
                         <span class="highlight">ja_JP.UTF-8 UTF-8</span>
                     </div>
                 </div>
@@ -226,14 +261,15 @@ quit;</div>
                 <p class="step-desc">Zabbixサーバーの構成ファイルを編集し、データベースのパスワードを指定する。</p>
 
                 <div class="file-edit">
-                    <div class="file-name">① 構成ファイルの編集</div>
+                    <div class="file-name">構成ファイルの編集</div>
                     <div class="terminal" style="margin-bottom: 8px;">
-                        <div class="cmd-line"><span class="cmd-text">sudo nano /etc/zabbix/zabbix_server.conf</span>
+                        <div class="cmd-line" data-prompt="$"><span class="cmd-text">sudo nano /etc/zabbix/zabbix_server.conf</span>
                         </div>
                     </div>
-                    <p class="step-desc" style="padding-left: 0; margin-bottom: 8px;">ファイル内で `DBPassword=`
+                    <p class="step-desc">ファイル内で `DBPassword=`
                         の行を探して、コメントアウト（#）を外し、データベースのパスワードを指定</p>
                     <div class="file-content">
+                        <div class="file-header">/etc/zabbix/zabbix_server.conf</div>
                         DBPassword=<span class="highlight">password</span>
                         <div class="tip-indicator" style="margin-left: 20px;">TIP
                             <div class="tip-content">[1-3]で設定した zabbix ユーザーのパスワードを記述</div>
@@ -251,13 +287,13 @@ quit;</div>
 
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">sudo systemctl restart zabbix-server zabbix-agent apache2 mysql</span>
                     </div>
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">sudo systemctl enable zabbix-server zabbix-agent apache2 mysql</span>
                     </div>
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">sudo systemctl is-active zabbix-server zabbix-agent apache2 mysql</span>
                         <div class="tip-indicator">TIP
                             <div class="tip-content">起動しているかを確認（activeになっていればOK）</div>
@@ -266,7 +302,7 @@ quit;</div>
                 </div>
                 <p class="step-desc">ports.conf を編集</p>
                 <div class="terminal">
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">sudo nano /etc/apache2/ports.conf</span>
                     </div>
                 </div>
@@ -279,7 +315,7 @@ quit;</div>
                 </div>
                 <p class="step-desc">使用ポートの変更を適用するために再起動</p>
                 <div class="terminal">
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">sudo systemctl restart apache2</span>
                     </div>
                 </div>
@@ -290,7 +326,8 @@ quit;</div>
                     <div class="step-number">1-8</div>
                     <div class="step-title">WebUIでの初期セットアップ</div>
                 </div>
-                <p class="step-desc">ホストOSのブラウザから、<a href="http://192.168.56.201/zabbix" target="_blank">http://192.168.56.201/zabbix</a> にアクセスする。</p>
+                <p class="step-desc">ホストOSのブラウザから、<a href="http://192.168.56.201/zabbix"
+                        target="_blank">http://192.168.56.201/zabbix</a> にアクセスする。</p>
 
                 <div class="file-edit" style="margin-top: 16px;">
                     <div class="file-name">💡 セットアップウィザードの手順</div>
@@ -298,8 +335,7 @@ quit;</div>
                         <ol style="margin: 0; padding-left: 20px; line-height: 1.8;">
                             <li><strong>ようこそ:</strong> 言語を選択（日本語が選べるようになっているか確認）して「次のステップ」</li>
                             <li><strong>前提条件のチェック:</strong> 全て「OK」であることを確認して「次のステップ」</li>
-                            <li><strong>データベース接続設定:</strong> Password 欄に [1-3] で決めたパスワードを入力して「次のステップ」（※他の設定は触らない）
-                            </li>
+                            <li><strong>データベース接続設定:</strong> Password 欄に [1-3] で決めたパスワードを入力して「次のステップ」（※他の設定は触らない）</li>
                             <li><strong>設定:</strong> サーバー名（今回は"test1"）を入力して「次のステップ」</li>
                             <li><strong>インストール:</strong> 設定内容を確認して「終了」</li>
                         </ol>
@@ -324,7 +360,7 @@ quit;</div>
                 <p class="step-desc">Zabbix のグラフで使用するフォントをインストール</p>
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">sudo apt install -y fonts-takao-pgothic</span>
                     </div>
                 </div>
@@ -332,7 +368,7 @@ quit;</div>
                 <p class="step-desc" style="margin-top: 16px;">インストールしたフォントを有効化</p>
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">sudo update-alternatives --install
                             /usr/share/zabbix/assets/fonts/graphfont.ttf zabbix-frontend-font
                             /usr/share/fonts/truetype/takao-gothic/TakaoPGothic.ttf 20</span>
@@ -342,23 +378,192 @@ quit;</div>
                 <p class="step-desc" style="margin-top: 16px;">フォントを適用するため、各種サービスを再起動</p>
                 <div class="terminal">
                     <div class="terminal-header">Terminal</div>
-                    <div class="cmd-line">
+                    <div class="cmd-line" data-prompt="$">
                         <span class="cmd-text">sudo systemctl restart zabbix-server zabbix-agent apache2</span>
                     </div>
                 </div>
             </section>
-            <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 40px 0;">
 
-            <section id="step-10" style="text-align: center; padding: 20px 0;">
+            <hr>
+
+            <div class="main-title-block" id="heading-2">
                 <h2>2 監視対象 (test2 / Ubuntu Desktop) の設定</h2>
-                <a href="../Ubuntu_Zabbix_Agent/">
-                    Client設定手順へ進む ➔
-                </a>
+                <p class="step-desc">
+                    監視対象の2台には、データを収集するための Zabbix Agent をインストールする。この作業は両方のマシンで行う。
+                </p>
+            </div>
+
+            <section id="step-2-1">
+                <div class="step-header">
+                    <div class="step-number">2-1</div>
+                    <div class="step-title">Zabbixリポジトリの登録</div>
+                </div>
+                <p class="step-desc">サーバー側と同様に、公式リポジトリを追加する。</p>
+
+                <div class="terminal">
+                    <div class="terminal-header">Terminal</div>
+                    <div class="cmd-line" data-prompt="$">
+                        <span class="cmd-text">cd /tmp</span>
+                    </div>
+                    <div class="cmd-line" data-prompt="$">
+                        <span class="cmd-text">wget
+                            https://repo.zabbix.com/zabbix/7.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_7.0-1+ubuntu24.04_all.deb</span>
+                    </div>
+                    <div class="cmd-line" data-prompt="$">
+                        <span class="cmd-text">sudo dpkg -i zabbix-release_7.0-1+ubuntu24.04_all.deb</span>
+                    </div>
+                    <div class="cmd-line" data-prompt="$">
+                        <span class="cmd-text">sudo apt update</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="step-2-2">
+                <div class="step-header">
+                    <div class="step-number">2-2</div>
+                    <div class="step-title">Zabbix Agent のインストール</div>
+                </div>
+                <p class="step-desc">Zabbix Agent をインストールする。</p>
+
+                <div class="terminal">
+                    <div class="terminal-header">Terminal</div>
+                    <div class="cmd-line" data-prompt="$">
+                        <span class="cmd-text">sudo apt install zabbix-agent -y</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="step-2-3">
+                <div class="step-header">
+                    <div class="step-number">2-3</div>
+                    <div class="step-title">エージェント設定ファイルの編集</div>
+                </div>
+                <p class="step-desc">Zabbixサーバー（test1）からの通信を受け入れられるよう、内部ネットワークのIPアドレスを指定する。</p>
+
+                <div class="terminal">
+                    <div class="terminal-header">Terminal</div>
+                    <div class="cmd-line" data-prompt="$">
+                        <span class="cmd-text">sudo nano /etc/zabbix/zabbix_agentd.conf</span>
+                    </div>
+                </div>
+
+                <p class="step-desc">※各設定項目は分散した場所に存在する。</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>設定項目</th>
+                            <th>test2 の設定値</th>
+                            <th>Ubuntu Desktop の設定値</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Server=</td>
+                            <td>192.168.2.201</td>
+                            <td>192.168.1.201</td>
+                        </tr>
+                        <tr>
+                            <td>ServerActive=</td>
+                            <td>192.168.2.201</td>
+                            <td>192.168.1.201</td>
+                        </tr>
+                        <tr>
+                            <td>Hostname=</td>
+                            <td>test2</td>
+                            <td>test3</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="step-2-4">
+                <div class="step-header">
+                    <div class="step-number">2-4</div>
+                    <div class="step-title">サービスの起動と有効化</div>
+                </div>
+                <p class="step-desc">Zabbix Agent サービスを起動し、自動起動を有効化する。</p>
+
+                <div class="terminal">
+                    <div class="terminal-header">Terminal</div>
+                    <div class="cmd-line" data-prompt="$">
+                        <span class="cmd-text">sudo systemctl restart zabbix-agent</span>
+                    </div>
+                    <div class="cmd-line" data-prompt="$">
+                        <span class="cmd-text">sudo systemctl enable zabbix-agent</span>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+
+            <div class="main-title-block" id="heading-3">
+                <h2>3 Zabbix WebUI での設定</h2>
+            </div>
+
+            <section id="step-3-1">
+                <div class="step-header">
+                    <div class="step-number">3-1</div>
+                    <div class="step-title">Zabbix Web画面でのホスト登録</div>
+                </div>
+                <p class="step-desc">
+                    最後に、test1 のWeb管理画面（<a href="http://192.168.56.201/zabbix"
+                        target="_blank">http://192.168.56.201/zabbix</a>）にログインし、2台の監視対象を登録する。
+                </p>
+
+                <div class="file-edit">
+                    <div class="file-name">💡 ホスト登録の手順</div>
+                    <div class="file-content">
+                        <ol>
+                            <li>左メニューの <strong>「データ収集 (Data collection)」</strong> ＞ <strong>「ホスト (Hosts)」</strong>
+                                を開き、右上の <strong>「ホストの作成 (Create host)」</strong> をクリックする。</li>
+                            <li>以下の通りに入力する。</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>設定項目</th>
+                            <th>test2 の設定値</th>
+                            <th>Ubuntu Desktop の設定値</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ホスト名</td>
+                            <td>test2 <span class="attention-text">(※Agent設定のHostnameと一致させる)</span></td>
+                            <td>test3 <span class="attention-text">(※Agent設定のHostnameと一致させる)</span></td>
+                        </tr>
+                        <tr>
+                            <td>テンプレート</td>
+                            <td>Linux by Zabbix agent</td>
+                            <td>Linux by Zabbix agent</td>
+                        </tr>
+                        <tr>
+                            <td>ホストグループ</td>
+                            <td>Virtual machines</td>
+                            <td>Virtual machines</td>
+                        </tr>
+                        <tr>
+                            <td>インターフェース</td>
+                            <td>
+                                「追加」ボタン ＞ 「エージェント」を選択<br>
+                                <strong>IPアドレス:</strong> 192.168.2.202
+                            </td>
+                            <td>
+                                「追加」ボタン ＞ 「エージェント」を選択<br>
+                                <strong>IPアドレス:</strong> 192.168.1.203
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </section>
         </main>
 
         <footer>
-            Zabbix Server Setup Guide - Rei IMABAYASHI
+            Zabbix Server & Agent Setup Guide
         </footer>
     </div>
 
