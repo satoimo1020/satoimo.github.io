@@ -3,7 +3,7 @@
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
     // index.html から見た親ディレクトリへのパス
-    const basePath = '../../'; 
+    const basePath = '../../';
 
     Promise.all([
         fetch(`${basePath}header.html`).then(res => {
