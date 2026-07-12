@@ -717,7 +717,7 @@ footer {
 
 
 /* ==========================================================================
-   画像拡大モーダル・ホバーエフェクト
+   画像拡大モーダル
    ========================================================================== */
 
 /* JavaScriptで自動付与される画像ラッパー */
@@ -766,6 +766,8 @@ footer {
 .image-modal-content {
     max-width: 90% !important;
     max-height: 90vh !important;
+    min-width: 60%;
+    min-height: 60vh;
     object-fit: contain;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     border-radius: var(--radius-lg);
