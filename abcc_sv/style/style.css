@@ -205,7 +205,7 @@ body.dark-mode .sidebar .toc-list::before {
 
 /* 大項目 (階層1) */
 .sidebar .depth-1 {
-    margin-top: 12px;
+    margin-top: 32px;
 }
 
 .sidebar .depth-1:first-child {
@@ -624,7 +624,6 @@ body.dark-mode .file-header {
 
 .attention-text {
     color: var(--attention);
-    font-size: 0.9em;
 }
 
 body.dark-mode table span[style*="color"] {

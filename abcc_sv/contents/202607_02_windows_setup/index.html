@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows 11 インストール手順（ローカルアカウント）</title>
+    <link rel="stylesheet" href="../../style/style.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="page-title-area">
+            <div class="badge-container">
+                <span class="badge badge-primary">VirtualBox 7.2.12</span>
+                <span class="badge badge-secondary">Windows 11 Pro 24H2</span>
+            </div>
+            <h1>Windows 11 オフラインインストール</h1>
+            <p class="description">
+                作成日: 2026年07月12日 | 更新日: 2026年07月12日
+            </p>
+        </div>
+
+        <nav class="sidebar">
+            <h2>目次</h2>
+            <ul class="toc-list">
+                <li class="toc-item depth-1">
+                    <a href="#heading-1">1. VirtualBox側の設定</a>
+                    <ul class="toc-sub-list">
+                        <li class="toc-item depth-2"><a href="#step-1-1">1-1. 仮想マシンの新規作成</a></li>
+                        <li class="toc-item depth-2"><a href="#step-1-2">1-2. 仮想ハードウェア・詳細設定</a></li>
+                    </ul>
+                </li>
+                <li class="toc-item depth-1">
+                    <a href="#heading-2">2. Windows 11 インストール</a>
+                    <ul class="toc-sub-list">
+                        <li class="toc-item depth-2"><a href="#step-2-1">2-1. CD or DVD......</a></li>
+                        <li class="toc-item depth-2"><a href="#step-2-2">2-2. 言語設定を選択</a></li>
+                        <li class="toc-item depth-2"><a href="#step-2-3">2-3. キーボード設定を選択</a></li>
+                        <li class="toc-item depth-2"><a href="#step-2-4">2-4. 同意画面</a></li>
+                        <li class="toc-item depth-2"><a href="#step-2-5">2-5. プロダクトキーがありません</a></li>
+                        <li class="toc-item depth-2"><a href="#step-2-6">2-6. イメージの選択</a></li>
+                        <li class="toc-item depth-2"><a href="#step-2-7">2-7. 適用される通知とライセンス条項</a></li>
+                        <li class="toc-item depth-2"><a href="#step-2-8">2-8. Windows 11 をインストールする場所の選択</a></li>
+                        <li class="toc-item depth-2"><a href="#step-2-9">2-9. インストール準備完了</a></li>
+                    </ul>
+                </li>
+                <li class="toc-item depth-1">
+                    <a href="#heading-3">3. OOBEネットワーク制限の回避</a>
+                    <ul class="toc-sub-list">
+                        <li class="toc-item depth-2"><a href="#step-3-1">3-1. レジストリ編集</a></li>
+                    </ul>
+                </li>
+                <li class="toc-item depth-1">
+                    <a href="#heading-4">4. ローカルアカウントセットアップ</a>
+                    <ul class="toc-sub-list">
+                        <li class="toc-item depth-2"><a href="#step-4-1">4-1. 国または地域はこれでよろしいですか？</a></li>
+                        <li class="toc-item depth-2"><a href="#step-4-2">4-2. これは正しいキーボードレイアウトまたは入力方式ですか？</a></li>
+                        <li class="toc-item depth-2"><a href="#step-4-3">4-3. 2つ目のキーボードレイアウトを追加しますか？</a></li>
+                        <li class="toc-item depth-2"><a href="#step-4-4">4-4. ネットワークに接続しましょう</a></li>
+                        <li class="toc-item depth-2"><a href="#step-4-5">4-5. このデバイスを使うのはだれですか？</a></li>
+                        <li class="toc-item depth-2"><a href="#step-4-6">4-6. 確実に覚えやすいパスワードを作成します</a></li>
+                        <li class="toc-item depth-2"><a href="#step-4-7">4-7. パスワードの確認</a></li>
+                        <li class="toc-item depth-2"><a href="#step-4-8">4-8. ここでセキュリティの質問を追加します</a></li>
+                        <li class="toc-item depth-2"><a href="#step-4-9">4-9. デバイスのプライバシー設定の選択</a></li>
+                    </ul>
+                </li>
+                <li class="toc-item depth-1">
+                    <a href="#heading-5">5. インストール完了後の設定</a>
+                    <ul class="toc-sub-list">
+                        <li class="toc-item depth-2"><a href="#step-5-1">5-1. Windows Updateの一時停止</a></li>
+                        <li class="toc-item depth-2"><a href="#step-5-2">5-2. ネットワークアダプターの有効化</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+        <main>
+
+            <div class="note-box">
+                <div class="note-box-title">⚠️ 留意事項</div>
+                <ul>
+                    <li>ホストマシンのストレージは<strong>64GB以上</strong>空けておく必要がある。</li>
+                    <li>インストール直後であっても、<strong>20GBほどストレージを消費する</strong>。</li>
+                </ul>
+                参考：<a href="https://www.microsoft.com/ja-jp/windows/windows-11-specifications?r=1"
+                    target="_blank">Windows 11 の仕様とシステム要件 | Microsoft Windows</a>
+            </div>
+
+            <div class="main-title-block" id="heading-1">
+                <h2>1. VirtualBox側の設定</h2>
+                <p class="step-desc">
+                    VirtualBox上でWindows 11を正常に動かすための仮想マシンの新規作成、およびインストールの事前準備となるリソース割当とハードウェア設定を行います。
+                </p>
+            </div>
+
+            <section id="step-1-1">
+                <div class="step-header">
+                    <div class="step-number">1-1</div>
+                    <div class="step-title">仮想マシンの新規作成</div>
+                </div>
+                <div class="file-edit">
+                    <div class="file-name">新規マシン作成</div>
+                    <div class="file-content">
+                        <ol>
+                            <li>VirtualBoxを起動し、上部メニューの「新規」をクリック</li>
+                            <li><strong>仮想マシンの名前と OS:</strong>
+                                <ul>
+                                    <li>VM名: 任意（例: <code>Win11_24H2</code>）</li>
+                                    <li>ISOイメージ: 事前にダウンロードしたWindows 11のisoファイルを選択</li>
+                                    <li>無人インストールを実行: <span class="attention-text">チェックを外す</span></li>
+                                </ul>
+                            </li>
+                            <li><strong>仮想ハードウェアを指定:</strong>
+                                <ul>
+                                    <li>メインメモリー: <span class="highlight">8192MB</span> 推奨</li>
+                                    <li>CPU数: <span class="highlight">8コア</span> 推奨</li>
+                                </ul>
+                            </li>
+                            <li>設定内容を確認し、「完了」</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <section id="step-1-2">
+                <div class="step-header">
+                    <div class="step-number">1-2</div>
+                    <div class="step-title">仮想ハードウェア・詳細設定</div>
+                </div>
+                <p class="step-desc">作成した仮想マシンの設定を最適化し、ローカルアカウント作成をスムーズに行うためにネットワークを遮断します。</p>
+                <div class="file-edit">
+                    <div class="file-name">仮想マシンの設定変更</div>
+                    <div class="file-content">
+                        <ol>
+                            <li>作成した仮想マシンを選択した状態で「設定」を開く</li>
+                            <li><strong>ディスプレイ</strong> ＞ 「グラフィックスコントローラー」を
+                                <span class="highlight">VBoxVGA</span> に変更
+                            </li>
+                            <li><strong>ストレージ</strong> ＞ <code>VM名.vdi</code> を選択 ＞
+                                <span class="highlight">「SSD（ソリッドステートドライブ）」</span>にチェックを入れる
+                            </li>
+                            <li><strong>ネットワーク</strong> ＞
+                                <span class="highlight">「ネットワークアダプターを有効化」のチェックを外す</span>
+                            </li>
+                            <li>「OK」をクリックして変更を保存</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+            <div class="main-title-block" id="heading-2">
+                <h2>2. Windows 11 インストール</h2>
+                <p class="step-desc">
+                    仮想マシンを起動し、Windows 11のインストーラーの指示に従ってエディションやキーボード環境を選択していきます。
+                </p>
+            </div>
+
+            <section id="step-2-1">
+                <div class="step-header">
+                    <div class="step-number">2-1</div>
+                    <div class="step-title">CD or DVD......</div>
+                </div>
+                <p>仮想マシンを起動後、画面に 
+                    <code>Press any key to boot from CD or DVD......</code>
+                    と表示されたら、
+                    <span class="highlight">すかさず任意のキー（Spaceキーなど）を叩く</span>
+                </p>
+            </section>
+
+            <section id="step-2-2">
+                <div class="step-header">
+                    <div class="step-number">2-2</div>
+                    <div class="step-title">言語設定を選択</div>
+                </div>
+                <p>デフォルト（日本語）のままであることを確認し、そのまま「次へ」</p>
+                <img src="images/2-2_01_language.png" alt="言語設定">
+            </section>
+
+            <section id="step-2-3">
+                <div class="step-header">
+                    <div class="step-number">2-3</div>
+                    <div class="step-title">キーボード設定を選択</div>
+                </div>
+                <p>キーボードの種類を「日本語キーボード（106/109キー）」に変更後、「次へ」</p>
+                <img src="images/2-3_01_keyboard.png" alt="キーボード設定">
+            </section>
+
+            <section id="step-2-4">
+                <div class="step-header">
+                    <div class="step-number">2-4</div>
+                    <div class="step-title">セットアップオプションの選択</div>
+                </div>
+                <p>I agree everything ... にチェックを入れ、「次へ」</p>
+                <img src="images/2-4_01_setup.png" alt="セットアップオプション">
+            </section>
+
+            <section id="step-2-5">
+                <div class="step-header">
+                    <div class="step-number">2-5</div>
+                    <div class="step-title">プロダクトキーを入力してください</div>
+                </div>
+                <p>左下の「プロダクトキーがありません」を押下</p>
+                <img src="images/2-5_01_product_key.png" alt="プロダクトキー">
+            </section>
+
+            <section id="step-2-6">
+                <div class="step-header">
+                    <div class="step-number">2-6</div>
+                    <div class="step-title">イメージの選択</div>
+                </div>
+                <p>Windows11 Pro を選択して「次へ」</p>
+                <img src="images/2-6_01_image_selection.png" alt="イメージの選択">
+            </section>
+
+            <section id="step-2-7">
+                <div class="step-header">
+                    <div class="step-number">2-7</div>
+                    <div class="step-title">適用される通知とライセンス条項</div>
+                </div>
+                <p>「同意する」を押下</p>
+                <img src="images/2-7_01_license.png" alt="ライセンス条項">
+            </section>
+
+            <section id="step-2-8">
+                <div class="step-header">
+                    <div class="step-number">2-8</div>
+                    <div class="step-title">Windows 11 をインストールする場所の選択</div>
+                </div>
+                <p>容量が80GBのパーティションを選択して「次へ」</p>
+                <p>※すこしだけ時間がかかる</p>
+                <img src="images/2-8_01_location.png" alt="インストール場所">
+            </section>
+
+            <section id="step-2-9">
+                <div class="step-header">
+                    <div class="step-number">2-9</div>
+                    <div class="step-title">Windows 11 をインストールする場所の選択</div>
+                </div>
+                <p>インストール準備完了</p>
+                <p>※インストールは結構時間がかかるため、気長に待つ</p>
+                <img src="images/2-9_01_ready_to_install.png" alt="インストール準備完了">
+                <p>もし固まったら強制的にシャットダウンして起動しなおす</p>
+            </section>
+
+            <hr>
+            <div class="main-title-block" id="heading-3">
+                <h2>3. OOBEネットワーク制限の回避</h2>
+                <p class="step-desc">
+                    Windows 11のセットアップでは、ネットワーク接続とMicrosoftアカウントの紐付けをスキップできない。
+                    ローカルアカウントでセットアップを完了させるために、制限を回避するコマンドを投入する。
+                </p>
+                <p class="step-desc">参考: 
+                    <a href="https://e-words.jp/w/OOBE.html" target="_blank">OOBEとは - IT用語辞典 e-Words</a>
+                </p>
+            </div>
+
+            <section id="step-3-1">
+                <div class="step-header">
+                    <div class="step-number">3-1</div>
+                    <div class="step-title">レジストリ編集</div>
+                </div>
+                <p class="step-desc">初期インストール完了後、国・地域選択などの「OOBE画面」が起動したら以下の作業を実施する。</p>
+
+                <div class="file-edit">
+                    <div class="file-name">cmdを起動</div>
+                    <p>最初の選択画面（国選択等）が表示された状態で、キーボードの <kbd>Shift</kbd> + <kbd>F10</kbd>
+                                キーでコマンドプロンプトを立ち上げる</p>
+                </div>
+
+                <div class="terminal">
+                    <div class="terminal-header">cmd</div>
+                    <div class="cmd-line" data-prompt=">">
+                        <span class="cmd-text">reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE /v BypassNRO
+                            /t REG_DWORD /d 1 /f</span>
+                    </div>
+                    <div class="cmd-line" data-prompt=">">
+                        <span class="cmd-text">shutdown -r -t 0 -f</span>
+                        <div class="tip-indicator">TIP
+                            <div class="tip-content">
+                                shutdown: シャットダウンコマンド<br>
+                                -r: 再起動<br>
+                                -t 0: 0秒後に実行<br>
+                                -f: 強制実行
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="step-desc" style="margin-top: 15px;">
+                    ※もしシャットダウン状態のままフリーズした場合は、強制的に電源を落として再起動する</p>
+            </section>
+
+            <hr>
+            <div class="main-title-block" id="heading-4">
+                <h2>4. ローカルアカウントセットアップ</h2>
+                <p class="step-desc">
+                    制限回避設定（BypassNRO）を適用して再起動したため、ネットワーク未接続のままでセットアップを進めることができる。
+                </p>
+            </div>
+
+            <section id="step-4-1">
+                <div class="step-header">
+                    <div class="step-number">4-1</div>
+                    <div class="step-title">国または地域はこれでよろしいですか？</div>
+                </div>
+                <p>日本が選択された状態で「はい」</p>
+                <img src="images/4-1_01_region.png" alt="国・地域">
+            </section>
+
+            <section id="step-4-2">
+                <div class="step-header">
+                    <div class="step-number">4-2</div>
+                    <div class="step-title">これは正しいキーボードレイアウトまたは入力方式ですか？</div>
+                </div>
+                <p>Microsoft IME が選択された状態で「はい」</p>
+                <img src="images/4-2_01_ime.png" alt="キーボード入力方式">
+            </section>
+
+            <section id="step-4-3">
+                <div class="step-header">
+                    <div class="step-number">4-3</div>
+                    <div class="step-title">2つ目のキーボードレイアウトを追加しますか？</div>
+                </div>
+                <p>「スキップ」</p>
+                <img src="images/4-3_01_layout.png" alt="キーボード入力方式">
+            </section>
+
+            <section id="step-4-4">
+                <div class="step-header">
+                    <div class="step-number">4-4</div>
+                    <div class="step-title">ネットワークに接続しましょう</div>
+                </div>
+                <p>「インターネットに接続していません」を押下</p>
+                <p>※本来表示されないが、さっきのコマンドで表示されるようになった</p>
+                <img src="images/4-4_01_network.png" alt="ネットワーク接続">
+            </section>
+
+            <section id="step-4-5">
+                <div class="step-header">
+                    <div class="step-number">4-5</div>
+                    <div class="step-title">このデバイスを使うのはだれですか？</div>
+                </div>
+                <p>任意の名前を入力して「次へ」</p>
+                <p>※あとから変更できないため注意</p>
+                <img src="images/4-5_01_user_name.png" alt="ユーザー名">
+            </section>
+
+            <section id="step-4-6">
+                <div class="step-header">
+                    <div class="step-number">4-6</div>
+                    <div class="step-title">確実に覚えやすいパスワードを作成します</div>
+                </div>
+                <p>任意のパスワードを設定して「次へ」</p>
+                <img src="images/4-6_01_password.png" alt="パスワード">
+            </section>
+
+            <section id="step-4-7">
+                <div class="step-header">
+                    <div class="step-number">4-7</div>
+                    <div class="step-title">パスワードの確認</div>
+                </div>
+                <p>同様のパスワードをもう一度入力して「次へ」</p>
+                <img src="images/4-7_01_password_confirm.png" alt="パスワード確認">
+            </section>
+
+            <section id="step-4-8">
+                <div class="step-header">
+                    <div class="step-number">4-8</div>
+                    <div class="step-title">ここでセキュリティの質問を追加します</div>
+                </div>
+                <p>3つ設定する必要があるため、質問を選んで回答を入力</p>
+                <img src="images/4-8_01_question.png" alt="セキュリティの質問">
+            </section>
+
+            <section id="step-4-9">
+                <div class="step-header">
+                    <div class="step-number">4-9</div>
+                    <div class="step-title">デバイスのプライバシー設定の選択</div>
+                </div>
+                <p>Microsoft が勧めてくるオプションはロクなことがないため、全部いいえにして「次へ」</p>
+                <img src="images/4-9_01_question.png" alt="セキュリティの質問">
+                <div class="file-edit">
+                    <div class="file-name">Hello !!!</div>
+                    <div class="file-content">
+                        <p>こんにちは。</p>
+                        <p>準備しています。</p>
+                        <p>これには数分かかる場合があります。</p>
+                        <p>PCをコンセントに接続して電源を入れたままにしておいてください。</p>
+                        <p>もう少しで完了です。</p>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+            <div class="main-title-block" id="heading-5">
+                <h2>5. インストール完了後の設定</h2>
+                <p class="step-desc">
+                    デスクトップ画面が表示された後、Windowsを使用可能な状態にする。
+                </p>
+            </div>
+
+            <section id="step-5-1">
+                <div class="step-header">
+                    <div class="step-number">5-1</div>
+                    <div class="step-title">Windows Updateの一時停止</div>
+                </div>
+                <div class="file-edit">
+                    <div class="file-name">設定変更</div>
+                    <div class="file-content">
+                        <ol>
+                            <li>スタートメニュー等から「設定」を開く</li>
+                            <li>
+                                Windows Update タブ ＞ 更新の一時停止 ＞
+                                <span class="attention-text">「1週間一時停止する」</span>
+                                に変更します。
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="note-box">
+                    <div class="note-box-title">⚠️ なぜ直後にWindows Updateを停止するのか？</div>
+                    インストール直後に通信を戻すと、バックグラウンドで Windows Update が始まってしまう。大量のアップデートデータをダウンロードすることになるため、今回は停止する。
+                </div>
+            </section>
+
+            <section id="step-5-2">
+                <div class="step-header">
+                    <div class="step-number">5-2</div>
+                    <div class="step-title">ネットワークアダプターの有効化</div>
+                </div>
+                <div class="file-edit">
+                    <div class="file-name">VirtualBox設定</div>
+                    <div class="file-content">
+                        <ol>
+                            <li><strong>VirtualBox側のNWアダプター有効化:</strong>
+                                <ul>
+                                    <li>VMのWindowsをシャットダウン</li>
+                                    <li>当該マシンの 設定 ＞ ネットワーク ＞
+                                        <span class="highlight">「ネットワークアダプターを有効化」のチェックをつける</span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><strong>通信回復の確認:</strong>
+                                <ul>
+                                    <li>再度仮想マシンを起動させ、Windowsがインターネットへ疎通していることを確認</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                <p>最後に、Windowsをシャットダウンしてスナップショットを取る。</p>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="../../script/header_footer_script.js"></script>
+    <script src="../../script/tip_script.js"></script>
+    <script src="../../script/scrollspy_script.js"></script>
+    <script src="../../script/image_preview_script.js"></script>
+</body>
+
+</html>
