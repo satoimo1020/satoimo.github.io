@@ -70,7 +70,7 @@
                     <a href="#heading-5">5. インストール完了後の設定</a>
                     <ul class="toc-sub-list">
                         <li class="toc-item depth-2"><a href="#step-5-1">5-1. Windows Updateの一時停止</a></li>
-                        <li class="toc-item depth-2"><a href="#step-5-2">5-2. ネットワークアダプターの有効化</a></li>
+                        <li class="toc-item depth-2"><a href="#step-5-2">5-2. VMの各種設定</a></li>
                     </ul>
                 </li>
             </ul>
@@ -137,6 +137,11 @@
                             <li>作成した仮想マシンを選択した状態で「設定」を開く</li>
                             <li><strong>ディスプレイ</strong> ＞ 「グラフィックスコントローラー」を
                                 <span class="highlight">VBoxVGA</span> に変更
+                                <div class="tip-indicator">TIP
+                                    <div class="tip-content">
+                                        VBoxSVGAを利用すると起動できない事象を確認したため、VBoxVGAを選択する
+                                    </div>
+                                </div>
                             </li>
                             <li><strong>ストレージ</strong> ＞ <code>VM名.vdi</code> を選択 ＞
                                 <span class="highlight">「SSD（ソリッドステートドライブ）」</span>にチェックを入れる
@@ -163,7 +168,7 @@
                     <div class="step-number">2-1</div>
                     <div class="step-title">CD or DVD......</div>
                 </div>
-                <p>仮想マシンを起動後、画面に 
+                <p>仮想マシンを起動後、画面に
                     <code>Press any key to boot from CD or DVD......</code>
                     と表示されたら、
                     <span class="highlight">すかさず任意のキー（Spaceキーなど）を叩く</span>
@@ -252,7 +257,7 @@
                     Windows 11のセットアップでは、ネットワーク接続とMicrosoftアカウントの紐付けをスキップできない。
                     ローカルアカウントでセットアップを完了させるために、制限を回避するコマンドを投入する。
                 </p>
-                <p class="step-desc">参考: 
+                <p class="step-desc">参考:
                     <a href="https://e-words.jp/w/OOBE.html" target="_blank">OOBEとは - IT用語辞典 e-Words</a>
                 </p>
             </div>
@@ -267,7 +272,7 @@
                 <div class="file-edit">
                     <div class="file-name">cmdを起動</div>
                     <p>最初の選択画面（国選択等）が表示された状態で、キーボードの <kbd>Shift</kbd> + <kbd>F10</kbd>
-                                キーでコマンドプロンプトを立ち上げる</p>
+                        キーでコマンドプロンプトを立ち上げる</p>
                 </div>
 
                 <div class="terminal">
@@ -428,7 +433,7 @@
             <section id="step-5-2">
                 <div class="step-header">
                     <div class="step-number">5-2</div>
-                    <div class="step-title">ネットワークアダプターの有効化</div>
+                    <div class="step-title">VMの各種設定</div>
                 </div>
                 <div class="file-edit">
                     <div class="file-name">VirtualBox設定</div>
@@ -437,6 +442,16 @@
                             <li><strong>VirtualBox側のNWアダプター有効化:</strong>
                                 <ul>
                                     <li>VMのWindowsをシャットダウン</li>
+                                    <li><strong>ディスプレイ</strong> ＞ 「グラフィックスコントローラー」を
+                                        <span class="highlight">VBoxSVGA</span> に変更
+                                        <div class="tip-indicator">TIP
+                                            <div class="tip-content">
+                                                Windowsインストール後はVBoxSVGAでも問題なく動作するみたい
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>「3Dアクセラレーション」にチェックを入れる</li>
+                                    <li>「ビデオメモリー」を最大の256MBにする</li>
                                     <li>当該マシンの 設定 ＞ ネットワーク ＞
                                         <span class="highlight">「ネットワークアダプターを有効化」のチェックをつける</span>
                                     </li>
