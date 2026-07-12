@@ -71,6 +71,7 @@
                     <ul class="toc-sub-list">
                         <li class="toc-item depth-2"><a href="#step-5-1">5-1. Windows Updateの一時停止</a></li>
                         <li class="toc-item depth-2"><a href="#step-5-2">5-2. VMの各種設定</a></li>
+                        <li class="toc-item depth-2"><a href="#step-5-3">5-3. VMのリサイズを有効化する</a></li>
                     </ul>
                 </li>
             </ul>
@@ -455,7 +456,40 @@
                         </ol>
                     </div>
                 </div>
-                <p>最後に、Windowsをシャットダウンしてスナップショットを取る。</p>
+                <p>Windowsをシャットダウンしてスナップショットを取る。</p>
+            </section>
+
+            <section id="step-5-3">
+                <div class="step-header">
+                    <div class="step-number">5-3</div>
+                    <div class="step-title">VMのリサイズを有効化する</div>
+                </div>
+                <div class="file-edit">
+                    <div class="file-name">Guest Additionsのインストール</div>
+                    <div class="file-content">
+                        <p>当該マシンを起動して、デバイス ＞ Guest Additions CDイメージを挿入...</p>
+                        <img src="images/5-3_01_cd_image.png" alt="CDイメージ挿入">
+                        <p>VMのエクスプローラーのCDドライブからVBoxWindowsAdditionsをインストール</p>
+                        <img src="images/5-3_02_run_exe.png" alt="実行">
+                        <p>UAC が表示されたら「はい」</p>
+                        <img src="images/5-3_03_uac.png" alt="UAC">
+                        <p>セットアップウィザードが表示されたら、そのまま指示に従いインストールを進める</p>
+                        <img src="images/5-3_04_setup.png" alt="セットアップ">
+                        <p>最後に「Finish」を押すと再起動する</p>
+                        <p>フリーズしたら強制的に終了させて再度起動する</p>
+                    </div>
+                </div>
+                <p>これでリサイズが可能になる</p>
+                <div class="file-edit">
+                    <div class="file-name">CDイメージのアンマウント</div>
+                    <div class="file-content">
+                        <ol>
+                            <li>当該VMの 設定 ＞ ストレージ ＞ コントローラー: SATA ＞ VBoxGuestAdditions.iso を右クリックして割り当て除去</li>
+                            <li>光学ドライブを削除しますか？ ＞ 「除去」を押下</li>
+                            <li>「OK」</li>
+                        </ol>
+                    </div>
+                </div>
             </section>
 
         </main>
