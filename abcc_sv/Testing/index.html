@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PHP オブジェクト指向 & 設計 基礎確認クイズ (全30問)</title>
+    <style>
+        :root {
+            --primary-color: #4f5d95;
+            --primary-hover: #3b4776;
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-muted: #6c757d;
+            --correct-color: #28a745;
+            --correct-bg: #e8f5e9;
+            --incorrect-color: #dc3545;
+            --incorrect-bg: #ffebee;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 16px 8px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 24px;
+            position: relative;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--bg-color);
+        }
+
+        header h1 {
+            font-size: 1.35rem;
+            color: var(--primary-color);
+            margin-bottom: 6px;
+            word-break: break-word;
+        }
+
+        header p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Screen Toggle */
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+        }
+
+        /* Start Screen */
+        .start-card {
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .start-card h2 {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+        }
+
+        .start-card p {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 16px;
+        }
+
+        .chapter-list-preview {
+            text-align: left;
+            background: #f8f9fa;
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin: 16px 0 24px 0;
+            font-size: 0.85rem;
+        }
+
+        .chapter-list-preview ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--primary-color);
+            color: #ffffff;
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.12);
+            min-height: 48px;
+            user-select: none;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-skip {
+            background-color: #f1f3f5;
+            color: #495057;
+            border: 1px solid #ced4da;
+            box-shadow: none;
+        }
+        .btn-skip:hover {
+            background-color: #e9ecef;
+        }
+
+        /* Progress Bar */
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background-color: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Question Card */
+        .chapter-tag {
+            display: inline-block;
+            background-color: #eef2ff;
+            color: var(--primary-color);
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 18px;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background: #ffffff;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px 14px;
+            text-align: left;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            word-break: break-word;
+        }
+
+        .option-btn:hover:not(.disabled) {
+            border-color: var(--primary-color);
+            background-color: #f8f9ff;
+        }
+
+        .option-btn.correct {
+            border-color: var(--correct-color);
+            background-color: var(--correct-bg);
+            color: #155724;
+            font-weight: bold;
+        }
+
+        .option-btn.incorrect {
+            border-color: var(--incorrect-color);
+            background-color: var(--incorrect-bg);
+            color: #721c24;
+        }
+
+        .option-btn.disabled {
+            cursor: default;
+        }
+
+        /* Feedback Section */
+        .feedback-box {
+            display: none;
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            animation: fadeIn 0.25s ease;
+            word-break: break-word;
+        }
+
+        .feedback-box.show {
+            display: block;
+        }
+
+        .feedback-box.correct-fb {
+            background-color: var(--correct-bg);
+            border-left: 5px solid var(--correct-color);
+            color: #155724;
+        }
+
+        .feedback-box.incorrect-fb {
+            background-color: var(--incorrect-bg);
+            border-left: 5px solid var(--incorrect-color);
+            color: #721c24;
+        }
+
+        .explanation-text {
+            margin-top: 6px;
+            font-size: 0.85rem;
+            color: #333333;
+            line-height: 1.5;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Result Screen */
+        .result-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 14px auto;
+            box-shadow: 0 4px 10px rgba(79, 93, 149, 0.25);
+        }
+
+        .score-num {
+            font-size: 2rem;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .score-total {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .result-breakdown {
+            margin: 20px 0;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 14px;
+        }
+
+        .result-breakdown h3 {
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+
+        .chapter-score-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed #e9ecef;
+            font-size: 0.85rem;
+            gap: 8px;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* Review Section */
+        .review-section {
+            margin-top: 28px;
+            border-top: 2px solid var(--bg-color);
+            padding-top: 16px;
+        }
+
+        .review-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+            border-left: 4px solid var(--primary-color);
+            word-break: break-word;
+        }
+
+        .review-card.wrong {
+            border-left-color: var(--incorrect-color);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* モバイル（スマートフォン）向けレスポンシブ最適化 */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px 6px;
+            }
+
+            .container {
+                padding: 18px 14px;
+                border-radius: 10px;
+            }
+
+            header h1 {
+                font-size: 1.2rem;
+            }
+
+            .question-text {
+                font-size: 1rem;
+                margin-bottom: 14px;
+            }
+
+            .option-btn {
+                padding: 10px 12px;
+                font-size: 0.88rem;
+            }
+
+            .actions {
+                flex-direction: row;
+                width: 100%;
+            }
+
+            .actions .btn {
+                flex: 1;
+                width: 100%;
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+
+            .result-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .result-actions .btn {
+                width: 100%;
+            }
+
+            .chapter-score-row {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>PHP オブジェクト指向 & 設計 クイズ</h1>
+        <p>全30問 一問一答理解度チェック</p>
+    </header>
+
+    <!-- スタート画面 -->
+    <div id="start-screen" class="screen active">
+        <div class="start-card">
+            <h2>全9章・合計30問の確認テスト</h2>
+            <p>PHPのオブジェクト指向の基本文法から、カプセル化・継承・例外処理・MVC等の設計基礎まで、一問一答で即座に確認できます。</p>
+            
+            <div class="chapter-list-preview">
+                <strong>【出題範囲】</strong>
+                <ul>
+                    <li>第1章 クラスとインスタンスの基本 (5問)</li>
+                    <li>第2章 カプセル化 (4問)</li>
+                    <li>第3章 インターフェースと多態性 (4問)</li>
+                    <li>第4章 継承 (3問)</li>
+                    <li>第5章 名前空間 (2問)</li>
+                    <li>第6章 例外処理 (4問)</li>
+                    <li>第7章 オブジェクトの代入・参照 (2問)</li>
+                    <li>第8章 クラスライブラリとPDO (3問)</li>
+                    <li>第9章 MVC と設計の基本 (3問)</li>
+                </ul>
+            </div>
+
+            <button class="btn" style="width: 100%; max-width: 300px;" onclick="startQuiz()">クイズを開始する</button>
+        </div>
+    </div>
+
+    <!-- クイズ画面 -->
+    <div id="quiz-screen" class="screen">
+        <div class="progress-header">
+            <span id="progress-text">問題 1 / 30</span>
+            <span id="score-text">正解数: 0</span>
+        </div>
+        <div class="progress-bar-bg">
+            <div id="progress-bar-fill" class="progress-bar-fill"></div>
+        </div>
+
+        <div class="chapter-tag" id="chapter-tag">第1章 クラスとインスタンスの基本</div>
+        <div class="question-text" id="question-text">問題文がここに入ります</div>
+
+        <div class="options-grid" id="options-container">
+            <!-- 選択肢がJSで挿入されます -->
+        </div>
+
+        <div id="feedback-box" class="feedback-box">
+            <strong id="feedback-result">正解！</strong>
+            <div class="explanation-text" id="explanation-text">解説文がここに入ります。</div>
+        </div>
+
+        <div class="actions">
+            <button id="skip-btn" class="btn btn-skip" onclick="skipQuestion()">スキップ</button>
+            <button id="next-btn" class="btn" style="display: none;" onclick="nextQuestion()">次の問題へ</button>
+        </div>
+    </div>
+
+    <!-- 結果画面 -->
+    <div id="result-screen" class="screen">
+        <div class="result-header">
+            <h2>テスト結果</h2>
+            <div class="score-circle">
+                <span class="score-num" id="final-score">0</span>
+                <span class="score-total">/ 30問</span>
+            </div>
+            <p id="result-message" style="font-weight: bold; font-size: 1rem; color: var(--primary-color);"></p>
+        </div>
+
+        <div class="result-breakdown">
+            <h3>【章ごとの正解率】</h3>
+            <div id="chapter-breakdown-list">
+                <!-- 章ごとの結果がJSで挿入されます -->
+            </div>
+        </div>
+
+        <div class="result-actions">
+            <button class="btn" onclick="restartQuiz(false)">全問やり直す</button>
+            <button id="retry-wrong-btn" class="btn btn-secondary" onclick="restartQuiz(true)" style="display: none;">間違えた問題のみ再挑戦</button>
+        </div>
+
+        <div class="review-section">
+            <h3 style="margin-bottom: 10px; font-size: 1rem;">【問題の復習と解説】</h3>
+            <div id="review-list">
+                <!-- 全問題と正誤・解説のリスト -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    // 第1章 (5問)
+    {
+        chapter: "第1章 クラスとインスタンスの基本",
+        question: "データ(プロパティ)と処理(メソッド)を1つにまとめる仕組みを何と呼びますか？",
+        options: ["クラス", "インスタンス", "関数", "モジュール"],
+        answer: 0,
+        explanation: "データ（プロパティ）と処理（メソッド）を1つにまとめた設計図のような仕組みを「クラス」と呼びます。"
+    },
+    {
+        chapter: "第1章 クラスとインスタンスの基本",
+        question: "クラスから新しいインスタンス(実体)を作成するときに使用するキーワードはどれですか？",
+        options: ["create", "new", "instance", "make"],
+        answer: 1,
+        explanation: "クラスから実体（インスタンス）を作成する際は `new` キーワード（例: $obj = new MyClass();）を使用します。"
+    },
+    {
+        chapter: "第1章 クラスとインスタンスの基本",
+        question: "クラスの中で自分自身のプロパティやメソッドにアクセスするために使うキーワードはどれですか？",
+        options: ["$self", "$this", "$parent", "$me"],
+        answer: 1,
+        explanation: "クラス内で自分自身のインスタンスのプロパティやメソッドを参照する際は `$this`（例: $this->name）を使用します。"
+    },
+    {
+        chapter: "第1章 クラスとインスタンスの基本",
+        question: "インスタンス作成時に最初に自動で呼び出される特別なメソッドはどれですか？",
+        options: ["__init", "__start", "__construct", "__destruct"],
+        answer: 2,
+        explanation: "インスタンス作成時に自動で呼び出される初期化用メソッドをコンストラクタ（`__construct`）と呼びます。"
+    },
+    {
+        chapter: "第1章 クラスとインスタンスの基本",
+        question: "同じクラスから作った2つのインスタンスが、プロパティの値が同じでも「別々の実体」であることを確認する適切な方法はどれですか？",
+        options: [
+            "var_dump()でオブジェクトIDが別番号になっていることを確認する",
+            "echoで出力して同じ文字列になるか比較する",
+            "print_r()で型名が一致していることを確認する",
+            "gettype()で結果が'object'になることを確認する"
+        ],
+        answer: 0,
+        explanation: "var_dump() でオブジェクトを出力すると `#1`, `#2` のようなオブジェクトIDが表示され、別々の実体であることが確認できます。"
+    },
+
+    // 第2章 (4問)
+    {
+        chapter: "第2章 カプセル化",
+        question: "複数の関数で書き換え可能な「グローバル変数」を使い回すことによる主な問題点は何ですか？",
+        options: [
+            "意図しない箇所で値が書き換えられバグの原因になりやすい",
+            "処理速度が大幅に低下する",
+            "メモリを消費しすぎてエラーになる",
+            "PHPのバージョンによって動作しなくなる"
+        ],
+        answer: 0,
+        explanation: "グローバル変数はどこからでも変更可能なため、予期せぬ場所で値が書き換わりバグの追跡が困難になります。"
+    },
+    {
+        chapter: "第2章 カプセル化",
+        question: "プロパティを private に設定する主な目的は何ですか？",
+        options: [
+            "外部から直接値を書き換えられないようにし、不正な値の代入を防ぐため",
+            "メモリの使用量を最小限に抑えるため",
+            "他のファイルからクラス自体を読み込めなくするため",
+            "処理速度を高速化するため"
+        ],
+        answer: 0,
+        explanation: "private にすることで外部からの直接アクセスを遮断し、データの安全性を保ちます（カプセル化）。"
+    },
+    {
+        chapter: "第2章 カプセル化",
+        question: "private なプロパティを外部から読み書きするための決まった命名規則はどれですか？",
+        options: ["getXxx() / setXxx()", "readXxx() / writeXxx()", "fetchXxx() / putXxx()", "loadXxx() / saveXxx()"],
+        answer: 0,
+        explanation: "値を取得するメソッドをゲッター（getXxx()）、値を設定するメソッドをセッター（setXxx()）と命名するのが一般的です。"
+    },
+    {
+        chapter: "第2章 カプセル化",
+        question: "セッター（setXxx）内で不正な値（空文字など）を弾く仕組みを入れる目的は何ですか？",
+        options: [
+            "バリデーションを行い、プロパティに不正な値が入ることを防ぐため",
+            "データベースの容量を節約するため",
+            "実行時間を短縮するため",
+            "自動的に正しい値に変換するため"
+        ],
+        answer: 0,
+        explanation: "セッター内でバリデーションを実施することで、オブジェクトが常に正しい状態を保持できるように保証します。"
+    },
+
+    // 第3章 (4問)
+    {
+        chapter: "第3章 インターフェースと多態性",
+        question: "複数のクラスが必ず実装すべきメソッドの名前などを定義する「約束事」の仕組みは何ですか？",
+        options: ["interface", "abstract class", "trait", "namespace"],
+        answer: 0,
+        explanation: "interface は実装すべきメソッドの宣言（名前や引数）だけを定義し、クラスに対する約束事（契約）として機能します。"
+    },
+    {
+        chapter: "第3章 インターフェースと多態性",
+        question: "interface のメソッドを実際にクラスで実装するときに使うキーワードはどれですか？",
+        options: ["implements", "extends", "uses", "applies"],
+        answer: 0,
+        explanation: "クラスがインターフェースを実装する際は `implements` キーワード（例: class Car implements Movable）を使用します。"
+    },
+    {
+        chapter: "第3章 インターフェースと多態性",
+        question: "interface の中でのメソッド宣言の特徴として正しいものはどれですか？",
+        options: [
+            "処理内容を書かず、メソッド名と引数だけをセミコロンで終える",
+            "必ずデフォルトの処理内容を記述しなければならない",
+            "プロパティの初期値も一緒に定義する必要がある",
+            "private なメソッドとして宣言しなければならない"
+        ],
+        answer: 0,
+        explanation: "インターフェース内のメソッドは処理（ボディ）を持たず、仕様（名前や引数）のみを宣言して `;` で終えます。"
+    },
+    {
+        chapter: "第3章 インターフェースと多態性",
+        question: "関数の引数にインターフェースを型指定しておくと、新しいクラスを追加しても関数のコードを変更せずに済むメリットを何と呼びますか？",
+        options: ["ポリモーフィズム(多態性)", "継承(インヘリタンス)", "カプセル化", "抽象化(アブストラクション)"],
+        answer: 0,
+        explanation: "同じインターフェースを実装した異なるクラスを統一的に扱える性質を「ポリモーフィズム（多態性）」と呼びます。"
+    },
+
+    // 第4章 (3問)
+    {
+        chapter: "第4章 継承",
+        question: "既存クラスのプロパティやメソッドをそのまま受け継いで新しいクラスを作るキーワードはどれですか？",
+        options: ["extends", "implements", "inherits", "clone"],
+        answer: 0,
+        explanation: "クラスを継承する際は `extends` キーワード（例: class Dog extends Animal）を使用します。"
+    },
+    {
+        chapter: "第4章 継承",
+        question: "クラス B がクラス A を extends した場合の主なメリットは何ですか？",
+        options: [
+            "クラス A の機能をクラス B の中で改めて書き直さなくてもそのまま利用できる",
+            "クラス A のすべての private プロパティが自由に書き換えられるようになる",
+            "クラス B のインスタンス生成時にクラス A の処理が2倍の速度で実行される",
+            "クラス A が自動的に削除されメモリが節約される"
+        ],
+        answer: 0,
+        explanation: "継承により、親クラス（クラス A）で定義されたコードを再利用でき、重複した記述を減らせます。"
+    },
+    {
+        chapter: "第4章 継承",
+        question: "PHP のクラス継承に関する規則として正しいものはどれですか？",
+        options: [
+            "原則として 1 つのクラスしか同時に extends できない（単一継承）",
+            "カンマで区切ることで複数のクラスを同時に extends できる（多重継承）",
+            "継承できる回数は最大 3 回までと決まっている",
+            "インターフェースを実装しているクラスは extends できない"
+        ],
+        answer: 0,
+        explanation: "PHPは単一継承言語であり、1つのクラスが直接継承できる親クラスは1つだけです。"
+    },
+
+    // 第5章 (2問)
+    {
+        chapter: "第5章 名前空間",
+        question: "同じ名前のクラスが異なる場所にあっても衝突せず共存できるようにする仕組みは何ですか？",
+        options: ["名前空間(namespace)", "パッケージ(package)", "モジュール(module)", "スコープ(scope)"],
+        answer: 0,
+        explanation: "namespace を使用することで、クラス名の競合を防止し、コードを整理できます。"
+    },
+    {
+        chapter: "第5章 名前空間",
+        question: "別の名前空間のクラスを簡単な名前で呼び出せるようにインポートするキーワードはどれですか？",
+        options: ["use", "import", "require", "include"],
+        answer: 0,
+        explanation: "use App\\Services\\UserService; のように `use` を使うことで、短いクラス名で呼び出せるようになります。"
+    },
+
+    // 第6章 (4問)
+    {
+        chapter: "第6章 例外処理",
+        question: "処理の途中で想定外の状況を意図的に発生させ、処理を中断させるキーワードはどれですか？",
+        options: ["throw", "catch", "raise", "error"],
+        answer: 0,
+        explanation: "異常が発生した際に例外オブジェクトを投げる（送出する）には `throw` を使用します。"
+    },
+    {
+        chapter: "第6章 例外処理",
+        question: "throw された例外を受け取りエラー処理を行うブロックはどれですか？",
+        options: ["catch", "handle", "error", "rescue"],
+        answer: 0,
+        explanation: "try { ... } catch (Exception $e) { ... } の形式で、投げられた例外を受け取って処理します。"
+    },
+    {
+        chapter: "第6章 例外処理",
+        question: "try ブロック内で例外が throw されたとき、それ以降の try ブロック内の処理はどうなりますか？",
+        options: [
+            "実行されず、即座に catch ブロックへ処理が移る",
+            "最後まで実行されてから catch ブロックへ移る",
+            "プログラム全体がその場で強制終了しログのみ出力される",
+            "自動的に throw の直前まで処理が巻き戻される"
+        ],
+        answer: 0,
+        explanation: "例外が発生した時点で try ブロックの後続処理はスキップされ、即座に catch ブロックへ移ります。"
+    },
+    {
+        chapter: "第6章 例外処理",
+        question: "catch ブロックの中で、例外のエラーメッセージ文字列を取得するメソッドはどれですか？",
+        options: ["getMessage()", "getError()", "toString()", "fetchMessage()"],
+        answer: 0,
+        explanation: "例外オブジェクトの `$e->getMessage()` メソッドでエラーメッセージ文字列を取得できます。"
+    },
+
+    // 第7章 (2問)
+    {
+        chapter: "第7章 オブジェクトの代入（参照）",
+        question: "あるオブジェクトを変数 A から変数 B へ代入した（$b = $a;）ときの挙動として正しいものはどれですか？",
+        options: [
+            "実体は複製されず、変数 B は変数 A と同じインスタンスを指すようになる",
+            "インスタンスの完全な複製が新しく作成される",
+            "変数 A の中身が空(null)になり所有権が変数 B に移る",
+            "エラーが発生して代入に失敗する"
+        ],
+        answer: 0,
+        explanation: "PHPではオブジェクト変数は参照を保持しているため、代入しても同じインスタンス（実体）を指します。"
+    },
+    {
+        chapter: "第7章 オブジェクトの代入（参照）",
+        question: "オブジェクトの特定の値だけをバックアップしたいときの適切な対処法はどれですか？",
+        options: [
+            "オブジェクトそのものではなく、必要な値だけを別の変数にコピーする",
+            "オブジェクトを直接代入して元の変数を unset() する",
+            "オブジェクトを配列にキャストして参照する",
+            "インスタンスの識別番号を保存する"
+        ],
+        answer: 0,
+        explanation: "オブジェクト自体の代入は参照渡しになるため、値のみを保持したい場合は特定の値（スカラー値等）を別変数へコピーします。"
+    },
+
+    // 第8章 (3問)
+    {
+        chapter: "第8章 クラスライブラリとデータベース接続",
+        question: "DateTime クラスのように、複雑な処理があらかじめ実装された既存クラスを使うメリットは何ですか？",
+        options: [
+            "自分でゼロから書かずに済み、開発の手間やミスを減らせること",
+            "自分で書くコードよりも100倍高速に動作すること",
+            "データベースの容量を自動的に削減できること",
+            "セキュリティホールが原理的に発生しなくなること"
+        ],
+        answer: 0,
+        explanation: "検証済みのクラスライブラリを活用することで、開発効率とコードの信頼性を大きく向上させることができます。"
+    },
+    {
+        chapter: "第8章 クラスライブラリとデータベース接続",
+        question: "PHP でデータベースに接続して SQL を実行する標準的なクラスはどれですか？",
+        options: ["PDO", "DBManager", "MySQLiClient", "SqlExecutor"],
+        answer: 0,
+        explanation: "PDO (PHP Data Objects) は、PHPからデータベースに接続・操作するための標準的な抽象化クラスです。"
+    },
+    {
+        chapter: "第8章 クラスライブラリとデータベース接続",
+        question: "PDO で SELECT 結果を 1 行ずつ取り出すために使うメソッドはどれですか？",
+        options: ["fetch()", "getRow()", "readLine()", "next()"],
+        answer: 0,
+        explanation: "PDOStatement オブジェクトの `fetch()` メソッドを実行することで、検索結果から1行ずつデータを取り出します。"
+    },
+
+    // 第9章 (3問)
+    {
+        chapter: "第9章 MVC と設計の基本",
+        question: "MVC パターンで、リクエストを最初に受け取りどの Controller に処理を渡すか決める部分はどれですか？",
+        options: ["Router", "Model", "View", "Dispatcher"],
+        answer: 0,
+        explanation: "Router (ルーティング) が URL リクエストを解析し、適切な Controller のアクションに処理を割り振ります。"
+    },
+    {
+        chapter: "第9章 MVC と設計の基本",
+        question: "MVC パターンで、データベースとのやり取りやデータ管理・ビジネスロジックを行う部分はどれですか？",
+        options: ["Model", "View", "Controller", "Router"],
+        answer: 0,
+        explanation: "Model はデータベース処理を含むアプリケーションのデータとビジネスロジックの管理を担当します。"
+    },
+    {
+        chapter: "第9章 MVC と設計の基本",
+        question: "1つのクラスに機能を詰め込みすぎて修正・拡張が困難になった悪い設計状態を何と呼びますか？",
+        options: ["神クラス(God Class)", "巨大オブジェクト", "万能モデル", "スパゲッティクラス"],
+        answer: 0,
+        explanation: "1つのクラスに過剰な責任が集約して肥大化したアンチパターンを「神クラス (God Class)」と呼びます。"
+    }
+];
+
+let currentQuestions = [];
+let currentQuestionIndex = 0;
+let userAnswers = []; 
+let score = 0;
+
+function startQuiz() {
+    currentQuestions = [...quizData];
+    currentQuestionIndex = 0;
+    userAnswers = [];
+    score = 0;
+
+    document.getElementById('start-screen').classList.remove('active');
+    document.getElementById('result-screen').classList.remove('active');
+    document.getElementById('quiz-screen').classList.add('active');
+
+    showQuestion();
+}
+
+function showQuestion() {
+    const q = currentQuestions[currentQuestionIndex];
+    
+    // UI Update
+    document.getElementById('progress-text').innerText = `問題 ${currentQuestionIndex + 1} / ${currentQuestions.length}`;
+    document.getElementById('score-text').innerText = `正解数: ${score}`;
+    
+    const fillPercent = ((currentQuestionIndex) / currentQuestions.length) * 100;
+    document.getElementById('progress-bar-fill').style.width = `${fillPercent}%`;
+
+    document.getElementById('chapter-tag').innerText = q.chapter;
+    document.getElementById('question-text').innerText = q.question;
+
+    // Options setup & Random Shuffle
+    const optionsContainer = document.getElementById('options-container');
+    optionsContainer.innerHTML = '';
+
+    let opts = q.options.map((optText, origIdx) => ({ text: optText, origIdx: origIdx }));
+    for (let i = opts.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [opts[i], opts[j]] = [opts[j], opts[i]];
+    }
+
+    opts.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.dataset.origIdx = opt.origIdx;
+        btn.innerText = `${['A', 'B', 'C', 'D'][idx]}. ${opt.text}`;
+        btn.onclick = () => selectOption(opt.origIdx, q.answer, btn);
+        optionsContainer.appendChild(btn);
+    });
+
+    // Reset feedback, skip, & next buttons
+    const fbBox = document.getElementById('feedback-box');
+    fbBox.className = 'feedback-box';
+    document.getElementById('next-btn').style.display = 'none';
+    document.getElementById('skip-btn').style.display = 'inline-flex';
+}
+
+function selectOption(selectedOrigIdx, correctOrigIdx, clickedBtn) {
+    const q = currentQuestions[currentQuestionIndex];
+    const optionBtns = document.querySelectorAll('.option-btn');
+
+    // Disable all options
+    optionBtns.forEach(btn => btn.classList.add('disabled'));
+
+    const isCorrect = (selectedOrigIdx === correctOrigIdx);
+    if (isCorrect) {
+        score++;
+        clickedBtn.classList.add('correct');
+    } else {
+        clickedBtn.classList.add('incorrect');
+        optionBtns.forEach(btn => {
+            if (parseInt(btn.dataset.origIdx) === correctOrigIdx) {
+                btn.classList.add('correct');
+            }
+        });
+    }
+
+    userAnswers.push({
+        question: q,
+        selectedOrigIdx: selectedOrigIdx,
+        isCorrect: isCorrect,
+        isSkipped: false
+    });
+
+    // Show Feedback
+    const fbBox = document.getElementById('feedback-box');
+    const fbResult = document.getElementById('feedback-result');
+    const fbExp = document.getElementById('explanation-text');
+
+    if (isCorrect) {
+        fbBox.className = 'feedback-box show correct-fb';
+        fbResult.innerText = '⭕ 正解！';
+    } else {
+        fbBox.className = 'feedback-box show incorrect-fb';
+        fbResult.innerText = `❌ 不正解... (正解: ${q.options[correctOrigIdx]})`;
+    }
+    fbExp.innerText = q.explanation;
+
+    document.getElementById('score-text').innerText = `正解数: ${score}`;
+    document.getElementById('next-btn').style.display = 'inline-flex';
+    document.getElementById('skip-btn').style.display = 'none';
+}
+
+function skipQuestion() {
+    const q = currentQuestions[currentQuestionIndex];
+    const optionBtns = document.querySelectorAll('.option-btn');
+
+    // Disable options and highlight correct answer
+    optionBtns.forEach(btn => {
+        btn.classList.add('disabled');
+        if (parseInt(btn.dataset.origIdx) === q.answer) {
+            btn.classList.add('correct');
+        }
+    });
+
+    userAnswers.push({
+        question: q,
+        selectedOrigIdx: null,
+        isCorrect: false,
+        isSkipped: true
+    });
+
+    // Show Feedback for Skipped
+    const fbBox = document.getElementById('feedback-box');
+    const fbResult = document.getElementById('feedback-result');
+    const fbExp = document.getElementById('explanation-text');
+
+    fbBox.className = 'feedback-box show incorrect-fb';
+    fbResult.innerText = `⏭️ スキップしました (正解: ${q.options[q.answer]})`;
+    fbExp.innerText = q.explanation;
+
+    document.getElementById('next-btn').style.display = 'inline-flex';
+    document.getElementById('skip-btn').style.display = 'none';
+}
+
+function nextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < currentQuestions.length) {
+        showQuestion();
+    } else {
+        showResults();
+    }
+}
+
+function showResults() {
+    document.getElementById('quiz-screen').classList.remove('active');
+    document.getElementById('result-screen').classList.add('active');
+
+    const total = currentQuestions.length;
+    document.getElementById('final-score').innerText = score;
+    
+    const percentage = Math.round((score / total) * 100);
+    let msg = "";
+    if (percentage === 100) {
+        msg = "素晴らしい！満点です！PHPオブジェクト指向の基礎は完璧です！";
+    } else if (percentage >= 80) {
+        msg = "高得点です！よく理解できています！";
+    } else if (percentage >= 60) {
+        msg = "合格ラインです！間違えた問題を復習してみましょう！";
+    } else {
+        msg = "もう一度復習して再挑戦してみましょう！";
+    }
+    document.getElementById('result-message').innerText = msg;
+
+    // Retry wrong button display
+    const wrongAnswersCount = total - score;
+    const retryWrongBtn = document.getElementById('retry-wrong-btn');
+    if (wrongAnswersCount > 0 && total === quizData.length) {
+        retryWrongBtn.style.display = 'inline-flex';
+    } else {
+        retryWrongBtn.style.display = 'none';
+    }
+
+    // Chapter Breakdown
+    const chapterMap = {};
+    userAnswers.forEach(ans => {
+        const ch = ans.question.chapter;
+        if (!chapterMap[ch]) {
+            chapterMap[ch] = { correct: 0, total: 0 };
+        }
+        chapterMap[ch].total++;
+        if (ans.isCorrect) chapterMap[ch].correct++;
+    });
+
+    const breakdownContainer = document.getElementById('chapter-breakdown-list');
+    breakdownContainer.innerHTML = '';
+    for (const [chName, stat] of Object.entries(chapterMap)) {
+        const row = document.createElement('div');
+        row.className = 'chapter-score-row';
+        row.innerHTML = `
+            <span>${chName}</span>
+            <strong>${stat.correct} / ${stat.total} 問 (${Math.round(stat.correct/stat.total*100)}%)</strong>
+        `;
+        breakdownContainer.appendChild(row);
+    }
+
+    // Review List
+    const reviewList = document.getElementById('review-list');
+    reviewList.innerHTML = '';
+    userAnswers.forEach((ans, idx) => {
+        const card = document.createElement('div');
+        card.className = `review-card ${ans.isCorrect ? '' : 'wrong'}`;
+        
+        const userChoiceText = ans.isSkipped 
+            ? 'スキップ（未回答）' 
+            : ans.question.options[ans.selectedOrigIdx];
+
+        card.innerHTML = `
+            <div><strong>問${idx + 1}. [${ans.question.chapter}]</strong></div>
+            <div style="margin: 4px 0;">${ans.question.question}</div>
+            <div style="font-size: 0.82rem; color: ${ans.isCorrect ? '#155724' : '#721c24'}; margin-bottom: 4px;">
+                あなたの回答: ${userChoiceText} ${ans.isCorrect ? '⭕ 正解' : '❌ 不正解'}
+            </div>
+            ${!ans.isCorrect ? `<div style="font-size: 0.82rem; font-weight: bold; color: #155724;">正解: ${ans.question.options[ans.question.answer]}</div>` : ''}
+            <div style="font-size: 0.82rem; color: #555; margin-top: 6px; background: #fff; padding: 8px; border-radius: 4px; border: 1px solid #eee;">
+                💡 <strong>解説:</strong> ${ans.question.explanation}
+            </div>
+        `;
+        reviewList.appendChild(card);
+    });
+}
+
+function restartQuiz(onlyWrong = false) {
+    if (onlyWrong) {
+        currentQuestions = userAnswers.filter(ans => !ans.isCorrect).map(ans => ans.question);
+    } else {
+        currentQuestions = [...quizData];
+    }
+    
+    currentQuestionIndex = 0;
+    userAnswers = [];
+    score = 0;
+
+    document.getElementById('result-screen').classList.remove('active');
+    document.getElementById('quiz-screen').classList.add('active');
+
+    showQuestion();
+}
+</script>
+
+</body>
+</html>
